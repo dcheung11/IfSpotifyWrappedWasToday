@@ -1,4 +1,14 @@
-import { Button, Card, Col, Empty, Layout, Row, Space, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Empty,
+  Layout,
+  List,
+  Row,
+  Space,
+  Typography,
+} from 'antd';
 import React from 'react';
 import messages from './messages';
 import { useEffect, useState } from 'react';
@@ -8,6 +18,7 @@ import {
 } from '../../utils/api/spotifyApi';
 import { Content, Footer, Header } from 'antd/es/layout/layout';
 import { LoginOutlined } from '@ant-design/icons';
+import { render } from 'react-testing-library';
 
 export default function HomePage() {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
@@ -18,6 +29,7 @@ export default function HomePage() {
 
   const [token, setToken] = useState('');
   const [searchKey, setSearchKey] = useState('');
+  const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
 
   useEffect(() => {
@@ -43,16 +55,30 @@ export default function HomePage() {
     window.localStorage.removeItem('token');
   };
 
-  const searchArtists = async e => {
-    e.preventDefault();
-    const artists = await searchArtistsRequest(token, searchKey);
-    setArtists(artists);
+  const handleGo = e => {
+    topTracks(e);
+    topArtists(e);
   };
 
+  const topTracks = async e => {
+    e.preventDefault();
+    const top = await userTopItemsRequest(token, 'tracks');
+    console.log('top', top.items);
+    setTracks(top.items);
+  };
   const topArtists = async e => {
     e.preventDefault();
     const top = await userTopItemsRequest(token, 'artists');
-    console.log('top', top);
+    console.log('top', top.items);
+    setArtists(top.items);
+  };
+
+  const renderTracks = () => {
+    return tracks.map((track, k) => (
+      <div key={track.id}>
+        {k + 1 + '. ' + track.name + ' by ' + track.artists[0].name}
+      </div>
+    ));
   };
 
   const renderArtists = () => {
@@ -129,7 +155,7 @@ export default function HomePage() {
             <Card>
               <div
                 style={{
-                  height: '30vh',
+                  height: '10vh',
                   display: 'flex',
                   justifyContent: 'center',
                 }}
@@ -145,25 +171,43 @@ export default function HomePage() {
                     }
                   />
                 ) : (
-                  <Button
-                    style={{
-                      alignItems: 'center',
-                      height: '75px',
-                      width: '75px',
-                      backgroundColor: '#1DB954',
-                      borderColor: '#1DB954',
-                      color: '#191414',
-                    }}
-                    size="large"
-                    shape="circle"
-                  >
-                    Go!
-                  </Button>
+                  <>
+                    <Button
+                      style={{
+                        alignItems: 'center',
+                        height: '75px',
+                        width: '75px',
+                        backgroundColor: '#1DB954',
+                        borderColor: '#1DB954',
+                        color: '#191414',
+                      }}
+                      size="large"
+                      shape="circle"
+                      onClick={handleGo}
+                    >
+                      Go!
+                    </Button>
+                  </>
                 )}
               </div>
             </Card>
+            {/* {renderArtists()} */}
+            <List
+              size="small"
+              header={<h3>Top Tracks of 2023</h3>}
+              bordered
+              dataSource={renderTracks()}
+              renderItem={(item, index) => <List.Item>{item}</List.Item>}
+            />
+            <List
+              itemLayout="horizontal"
+              size="large"
+              header={<h3>Top Artists of 2023</h3>}
+              bordered
+              dataSource={renderArtists()}
+              renderItem={(item, index) => <List.Item>{item}</List.Item>}
+            />
           </Content>
-          {/* <Footer > Damien Cheung</Footer> */}
         </Layout>
       </header>
     </div>

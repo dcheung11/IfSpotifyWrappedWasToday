@@ -9,6 +9,7 @@ export const searchArtistsRequest = async (token, searchKey) => {
       q: searchKey,
       type: 'artist',
     },
+
   });
   return data.artists.items;
 };
@@ -23,7 +24,7 @@ export const userTopItemsRequest = async (token, itemType) => {
       },
       params: {
         time_range: 'medium_term', // Can be 'short_term', 'medium_term' or 'long_term'
-        limit: 10, // Number of items to return
+        limit: 5, // Number of items to return
       },
     },
   );
