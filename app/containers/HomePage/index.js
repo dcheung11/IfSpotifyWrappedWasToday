@@ -1,21 +1,20 @@
-/*
- * HomePage
- *
- * This is the first thing users see of our App, at the '/' route
- *
- */
-
-import { Card, Layout, Typography } from 'antd';
+import { Button, Card, Col, Empty, Layout, Row, Space, Typography } from 'antd';
 import React from 'react';
 import messages from './messages';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import {
+  searchArtistsRequest,
+  userTopItemsRequest,
+} from '../../utils/api/spotifyApi';
+import { Content, Footer, Header } from 'antd/es/layout/layout';
+import { LoginOutlined } from '@ant-design/icons';
 
 export default function HomePage() {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
+  const SCOPE = 'user-top-read';
 
   const [token, setToken] = useState('');
   const [searchKey, setSearchKey] = useState('');
@@ -46,18 +45,16 @@ export default function HomePage() {
 
   const searchArtists = async e => {
     e.preventDefault();
-    const { data } = await axios.get('https://api.spotify.com/v1/search', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        q: searchKey,
-        type: 'artist',
-      },
-    });
-
-    setArtists(data.artists.items);
+    const artists = await searchArtistsRequest(token, searchKey);
+    setArtists(artists);
   };
+
+  const topArtists = async e => {
+    e.preventDefault();
+    const top = await userTopItemsRequest(token, 'artists');
+    console.log('top', top);
+  };
+
   const renderArtists = () => {
     return artists.map(artist => (
       <div key={artist.id}>
@@ -74,25 +71,100 @@ export default function HomePage() {
   return (
     <div>
       <header className="App-header">
-        <h1>Spotify React</h1>
-        {!token ? (
-          <a
-            href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
+        <Layout>
+          <Header
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 1,
+              width: '100%',
+              height: 96,
+              color: '#191414',
+            }}
           >
-            Login to Spotify
-          </a>
-        ) : (
-          <button onClick={logout}>Logout</button>
-        )}
-        {token ? (
-          <form onSubmit={searchArtists}>
-            <input type="text" onChange={e => setSearchKey(e.target.value)} />
-            <button type={'submit'}>Search</button>
-          </form>
-        ) : (
-          <h2>"PleaSE lOGINE"</h2>
-        )}
-        {renderArtists()}
+            <Row>
+              <Space size={'large'}>
+                <Typography.Title style={{ color: '#1DB954' }}>
+                  If Spotify Wrapped Was Today...
+                </Typography.Title>
+                {!token ? (
+                  <Button
+                    className="login-button"
+                    style={{
+                      marginTop: '22px',
+                      backgroundColor: '#1DB954',
+                      borderColor: '#1DB954',
+                      color: '#191414',
+                    }}
+                    size="large"
+                    shape="round"
+                    href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}
+                  >
+                    Login to Spotify
+                  </Button>
+                ) : (
+                  <Button
+                    className="logout-button"
+                    style={{
+                      marginTop: '22px',
+                      backgroundColor: '#1DB954',
+                      borderColor: '#1DB954',
+                      color: '#191414',
+                    }}
+                    size="large"
+                    shape="round"
+                    onClick={logout}
+                  >
+                    Logout
+                  </Button>
+                )}
+              </Space>
+            </Row>
+          </Header>
+          <Content
+            style={{
+              padding: '50px 50px',
+            }}
+          >
+            <Card>
+              <div
+                style={{
+                  height: '30vh',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                {!token ? (
+                  <Empty
+                    image={<LoginOutlined style={{ fontSize: '96px' }} />}
+                    // imageStyle={{ height: 60 }}
+                    description={
+                      <span>
+                        <h2>Login to see your Spotify Wrapped!</h2>
+                      </span>
+                    }
+                  />
+                ) : (
+                  <Button
+                    style={{
+                      alignItems: 'center',
+                      height: '75px',
+                      width: '75px',
+                      backgroundColor: '#1DB954',
+                      borderColor: '#1DB954',
+                      color: '#191414',
+                    }}
+                    size="large"
+                    shape="circle"
+                  >
+                    Go!
+                  </Button>
+                )}
+              </div>
+            </Card>
+          </Content>
+          {/* <Footer > Damien Cheung</Footer> */}
+        </Layout>
       </header>
     </div>
   );
