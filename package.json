@@ -65,6 +65,8 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.4.3",
+    "antd": "^5.4.6",
+    "axios": "^1.4.0",
     "chalk": "^2.4.2",
     "compression": "1.7.4",
     "connected-react-router": "6.4.0",
@@ -90,6 +92,7 @@
     "redux-saga": "1.0.2",
     "reselect": "4.0.0",
     "sanitize.css": "8.0.0",
+    "spotify-web-api-js": "^1.5.2",
     "styled-components": "4.2.0"
   },
   "devDependencies": {
