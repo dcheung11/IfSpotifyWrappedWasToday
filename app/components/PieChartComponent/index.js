@@ -9,13 +9,13 @@ export function PieChartComponent(props) {
   console.log(props);
 
   const option = {
-    backgroundColor: '#2c343c',
+    backgroundColor: '#FFFFFF',
     title: {
       text: 'Your Most Frequently Appearing Genres',
       left: 'center',
       top: 20,
       textStyle: {
-        color: '#ccc',
+        color: '#191414',
       },
     },
     tooltip: {
@@ -35,27 +35,21 @@ export function PieChartComponent(props) {
         type: 'pie',
         radius: '55%',
         center: ['50%', '50%'],
-        data: props.data,
-        // data: [
-        //   { value: 300, name: 'rap' },
-        //   { value: 310, name: 'trap' },
-        //   { value: 274, name: 'melodic Ads' },
-        //   { value: 235, name: 'hip Ads' },
-        //   { value: 150, name: 'Search Engine' },
-        // ].sort(function(a, b) {
-        //   return a.value - b.value;
-        // }),
+        data: props.data.sort(function(a, b) {
+          return a.value - b.value;
+        }),
+
         // roseType: 'radius',
         label: {
-          color: 'rgba(255, 255, 255, 0.3)',
+          color: '#191414',
         },
         labelLine: {
           lineStyle: {
-            color: 'rgba(255, 255, 255, 0.3)',
+            color: '#191414',
           },
           smooth: 0.2,
-          length: 10,
-          length2: 20,
+          length: 40,
+          length2: 70,
         },
         itemStyle: {
           color: '#1DB954',
@@ -71,5 +65,5 @@ export function PieChartComponent(props) {
     ],
   };
 
-  return <ReactECharts option={option} />;
+  return <ReactECharts option={option} style={{ height: '100vh' }} />;
 }

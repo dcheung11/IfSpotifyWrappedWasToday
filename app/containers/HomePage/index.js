@@ -28,7 +28,8 @@ import { render } from 'react-testing-library';
 import TopItemsList from '../../components/TopItemsList';
 import { PieChartComponent } from '../../components/PieChartComponent';
 import { Helmet } from 'react-helmet';
-
+import { capitalizeFirstLetters, toCamelCase } from '../../utils/transformers';
+import PopularityList from '../../components/PopularityList';
 const contentStyle = {
   height: '100vh',
   color: '#fff',
@@ -36,6 +37,7 @@ const contentStyle = {
   // textAlign: 'center',
   // background: '#1DB954',
   background: '#FFFFFF',
+  // background: '#2c343c',
 };
 
 export default function HomePage() {
@@ -130,42 +132,71 @@ export default function HomePage() {
     setGenres(genreCountNew);
   }, [artists, tracks]);
 
-  const renderTracks = () => {
-    return tracks.map((track, k) => ({
-      rank: k,
-      name: track.name,
-      preview_url: track.preview_url,
-      duration_ms: track.duration_ms,
-      link: track.external_urls.spotify,
-      artists: track.artists,
-      album: track.album,
-    }));
+  const getTrackDescription = m => {
+    let description;
+    if (m.artists.length === 1) {
+      description = m.artists[0].name;
+    } else {
+      description = m.artists[0].name + ' with ';
+      for (let i = 1; i < m.artists.length; i++) {
+        description += m.artists[i].name;
+        // If this is not the last artist, add a comma and space
+        if (i < m.artists.length - 1) {
+          description += ', ';
+        }
+      }
+    }
+    return <h3>{description}</h3>;
+  };
+  const getTrackImage = m => {
+    return !!m.album.images && m.album.images.length ? (
+      <Avatar
+        size={{
+          xs: 24,
+          sm: 32,
+          md: 64,
+          lg: 80,
+          xl: 120,
+          xxl: 140,
+        }}
+        width={'100%'}
+        src={m.album.images[0].url}
+        shape="square"
+      />
+    ) : (
+      <div>No Image</div>
+    );
   };
 
-  const renderArtists = () => {
-    return artists.map(artist => {
-      let avatar = artist.images.length ? (
-        <Avatar
-          size={{
-            xs: 24,
-            sm: 32,
-            md: 40,
-            lg: 64,
-            xl: 80,
-            xxl: 100,
-          }}
-          width={'100%'}
-          src={artist.images[0].url}
-          alt=""
-        />
-      ) : (
-        <div>No Image</div>
-      );
-      return {
-        avatar: avatar,
-        name: artist.name,
-      };
-    });
+  const getArtistDescription = m => {
+    let description = '';
+    for (let i = 0; i < m.genres.length; i++) {
+      description += m.genres[i];
+      // If this is not the last artist, add a comma and space
+      if (i < m.genres.length - 1) {
+        description += ', ';
+      }
+    }
+    return <h3>{capitalizeFirstLetters(description)}</h3>;
+  };
+
+  const getArtistImage = m => {
+    return !!m.images && m.images.length ? (
+      <Avatar
+        size={{
+          xs: 24,
+          sm: 32,
+          md: 64,
+          lg: 80,
+          xl: 120,
+          xxl: 140,
+        }}
+        width={'100%'}
+        src={m.images[0].url}
+      />
+    ) : (
+      <div>No Image</div>
+    );
   };
 
   const menu = [
@@ -285,6 +316,8 @@ export default function HomePage() {
                         itemType="Tracks"
                         // renderItem={renderTracks()}
                         data={tracks}
+                        getDescription={getTrackDescription}
+                        getImage={getTrackImage}
                       />
                       {/* </h3> */}
                     </div>
@@ -296,29 +329,40 @@ export default function HomePage() {
                   children: (
                     <div>
                       {/* <h3 style={contentStyle}> */}
-                      <List
-                        pagination
-                        size="small"
-                        header={<h3>Top a of 2023</h3>}
-                        bordered
-                        dataSource={renderArtists()}
-                        renderItem={(item, index) => (
-                          <List.Item>
-                            <div key={index}>
-                              <Row>
-                                <List.Item.Meta
-                                  avatar={item.avatar}
-                                  // title={item.name}
-                                  // description={item.name}
-                                />
-                                {index + 1} . {item.name}
-                              </Row>
-                            </div>
-                          </List.Item>
-                        )}
+                      <TopItemsList
+                        itemType="Artists"
+                        // renderItem={renderTracks()}
+                        data={artists}
+                        getDescription={getArtistDescription}
+                        getImage={getArtistImage}
                       />
                       {/* </h3> */}
                     </div>
+                    // <div>
+                    //   {/* <h3 style={contentStyle}> */}
+                    //   <List
+                    //     pagination
+                    //     size="small"
+                    //     header={<h3>Top a of 2023</h3>}
+                    //     bordered
+                    //     dataSource={renderArtists()}
+                    //     renderItem={(item, index) => (
+                    //       <List.Item>
+                    //         <div key={index}>
+                    //           <Row>
+                    //             <List.Item.Meta
+                    //               avatar={item.avatar}
+                    //               // title={item.name}
+                    //               // description={item.name}
+                    //             />
+                    //             {index + 1} . {item.name}
+                    //           </Row>
+                    //         </div>
+                    //       </List.Item>
+                    //     )}
+                    //   />
+                    //   {/* </h3> */}
+                    // </div>
                   ),
                 },
                 {
@@ -339,7 +383,11 @@ export default function HomePage() {
                 {
                   label: 'Popularity',
                   key: '4',
-                  children: <div />,
+                  children: (
+                    <div>
+                      <PopularityList />
+                    </div>
+                  ),
                 },
               ]}
             />
