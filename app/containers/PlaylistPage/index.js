@@ -100,15 +100,27 @@ function PlaylistPage(props) {
     console.log('top', top.items);
     setArtists(top.items);
   };
-  const routeChange = path => {
-    props.history.push('/stats');
+  const goToStatsPage = () => {
+    history.replace('stats');
+  };
+  const goToHomePage = () => {
+    history.replace('');
+  };
+  const goToPlaylistPage = () => {
+    history.replace('playlist');
   };
 
   return (
     <div>
       <header className="App-header">
         <Layout>
-          <SpotifyHeader token={token} setToken={setToken} logout={logout} />
+          <SpotifyHeader
+            token={token}
+            goToHomePage={goToHomePage}
+            goToStatsPage={goToStatsPage}
+            goToPlaylistPage={goToPlaylistPage}
+            logout={logout}
+          />
           <Content
             style={{
               padding: '50px 50px',
@@ -116,14 +128,7 @@ function PlaylistPage(props) {
               ...contentStyle,
             }}
           >
-            {!token ? (
-              <LoginModal />
-            ) : (
-              <Row>
-                <Button onClick={routeChange('stats')}> Stats</Button>
-                {/* <Button onClick={routeChange('playlist')}> Playlist</Button> */}
-              </Row>
-            )}
+            <Empty />
           </Content>
         </Layout>
       </header>

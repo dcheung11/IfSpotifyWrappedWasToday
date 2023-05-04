@@ -31,6 +31,7 @@ import { capitalizeFirstLetters, toCamelCase } from '../../utils/transformers';
 import PopularityPassport from '../../components/PopularityPassport';
 import './styles.css';
 import { withRouter } from 'react-router-dom';
+import SpotifyHeader from '../../components/SpotifyHeader';
 const contentStyle = {
   height: '100vh',
   color: '#fff',
@@ -178,67 +179,27 @@ function HomePage() {
     { key: 0, label: 'Spotfiy Wrapped Mini' },
     { key: 1, label: 'Playlist Wizard' },
   ];
+  const goToStatsPage = () => {
+    history.replace('stats');
+  };
+  const goToHomePage = () => {
+    history.replace('');
+  };
+  const goToPlaylistPage = () => {
+    history.replace('playlist');
+  };
 
   return (
     <div>
       <header className="App-header">
         <Layout>
-          <Header
-            style={{
-              // position: 'sticky',
-              top: 0,
-              zIndex: 1,
-              width: '100%',
-              height: 96,
-              color: '#191414',
-            }}
-          >
-            <Row>
-              <Space size={'large'}>
-                <Typography.Title style={{ color: '#1DB954' }}>
-                  If Spotify Wrapped Was Today...
-                </Typography.Title>
-                <Menu
-                  // style={{ height: 'flex' }}
-                  theme="dark"
-                  mode="horizontal"
-                  defaultSelectedKeys={['2']}
-                  items={menu}
-                />
-                {!token ? (
-                  <Button
-                    className="login-button"
-                    style={{
-                      marginTop: '22px',
-                      backgroundColor: '#1DB954',
-                      borderColor: '#1DB954',
-                      color: '#191414',
-                    }}
-                    size="large"
-                    shape="round"
-                    href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}
-                  >
-                    Login to Spotify
-                  </Button>
-                ) : (
-                  <Button
-                    className="logout-button"
-                    style={{
-                      marginTop: '22px',
-                      backgroundColor: '#1DB954',
-                      borderColor: '#1DB954',
-                      color: '#191414',
-                    }}
-                    size="large"
-                    shape="round"
-                    onClick={logout}
-                  >
-                    Logout
-                  </Button>
-                )}
-              </Space>
-            </Row>
-          </Header>
+          <SpotifyHeader
+            token={token}
+            goToHomePage={goToHomePage}
+            goToStatsPage={goToStatsPage}
+            goToPlaylistPage={goToPlaylistPage}
+            logout={logout}
+          />{' '}
           <Content
             style={{
               padding: '50px 50px',
@@ -246,27 +207,6 @@ function HomePage() {
               ...contentStyle,
             }}
           >
-            {/* <div
-              style={{
-                height: '10vh',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              {!token ? (
-                <Empty
-                  image={<LoginOutlined style={{ fontSize: '96px' }} />}
-                  // imageStyle={{ height: 60 }}
-                  description={
-                    <span>
-                      <h2>Login to see your Spotify Wrapped!</h2>
-                    </span>
-                  }
-                />
-              ) : (
-                'placehold'
-              )}
-            </div> */}
             <div style={{ textAlign: 'center' }}>
               <Radio.Group
                 // style={{ color: 'red' }}

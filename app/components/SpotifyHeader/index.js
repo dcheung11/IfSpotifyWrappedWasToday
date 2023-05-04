@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -18,20 +18,39 @@ import SpotifyLogoBlack from '../../images/spotify-logo.png';
 import { Header } from 'antd/es/layout/layout';
 import { withRouter } from 'react-router-dom';
 
-export default function SpotifyHeader(props) {
+function SpotifyHeader(props) {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
   const SCOPE = 'user-top-read';
-  const [token, setToken] = useState('');
-  const routeChange = path => {
-    // props.history.push(path);
+  // const [token, setToken] = useState('');
+  const routeChange = e => {
+    console.log(e);
+    // props.history.replace(path);
   };
-  const menu = [
-    { key: 0, label: 'Spotfiy Wrapped Mini', onClick: routeChange('stats') },
-    { key: 1, label: 'Playlist Wizard', onClick: routeChange('playlist') },
-  ];
+
+  // useEffect(() => {
+  //   const hash = window.location.hash;
+  //   let token = window.localStorage.getItem('token');
+
+  //   if (!token && hash) {
+  //     token = hash
+  //       .substring(1)
+  //       .split('&')
+  //       .find(elem => elem.startsWith('access_token'))
+  //       .split('=')[1];
+
+  //     window.location.hash = '';
+  //     window.localStorage.setItem('token', token);
+  //   }
+
+  //   props.setToken(token);
+  // }, []);
+  // const menu = [
+  //   { key: 0, label: 'Spotfiy Wrapped Mini' },
+  //   { key: 1, label: 'Playlist Wizard' },
+  // ];
 
   // const logout = () => {
   //   setToken('');
@@ -50,18 +69,56 @@ export default function SpotifyHeader(props) {
       }}
     >
       <Row>
-        <Space size={'large'}>
-          <Typography.Title style={{ color: '#1DB954' }}>
-            If Spotify Wrapped Was Today...
-          </Typography.Title>
-          <Menu
-            // style={{ height: 'flex' }}
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={['2']}
-            items={menu}
-          />
-          {!props.token ? (
+        {/* <Space size={'large'}> */}
+        <Typography.Title style={{ color: '#1DB954' }}>
+          If Spotify Wrapped Was Today...
+        </Typography.Title>
+        <Button
+          // icon={}
+          // className="login-button"
+          style={{
+            marginTop: '22px',
+            color: '#1DB954',
+            borderColor: '#1DB954',
+            backgroundColor: '#191414',
+          }}
+          size="large"
+          shape="round"
+          onClick={() => props.history.replace(`/`)}
+        >
+          Home
+        </Button>
+        <Button
+          // icon={}
+          // className="login-button"
+          style={{
+            marginTop: '22px',
+            color: '#1DB954',
+            borderColor: '#1DB954',
+            backgroundColor: '#191414',
+          }}
+          size="large"
+          shape="round"
+          onClick={() => props.history.replace(`/stats`)}
+        >
+          Stats
+        </Button>{' '}
+        <Button
+          // icon={}
+          className="login-button"
+          style={{
+            marginTop: '22px',
+            color: '#1DB954',
+            borderColor: '#1DB954',
+            backgroundColor: '#191414',
+          }}
+          size="large"
+          shape="round"
+          onClick={() => props.history.replace(`/playlist`)}
+        >
+          Playlist
+        </Button>
+        {/* {props.token ? (
             <Button
               // icon={}
               className="login-button"
@@ -92,9 +149,10 @@ export default function SpotifyHeader(props) {
             >
               Logout
             </Button>
-          )}
-        </Space>
+          )} */}
+        {/* </Space> */}
       </Row>
     </Header>
   );
 }
+export default withRouter(SpotifyHeader);

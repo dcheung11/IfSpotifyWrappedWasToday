@@ -4,6 +4,7 @@ import {
   Card,
   Carousel,
   Col,
+  Descriptions,
   Empty,
   Image,
   Layout,
@@ -13,6 +14,7 @@ import {
   Radio,
   Row,
   Space,
+  Statistic,
   Tabs,
   Typography,
 } from 'antd';
@@ -25,7 +27,7 @@ import {
   userTopItemsRequest,
 } from '../../utils/api/spotifyApi';
 import { Content, Footer, Header } from 'antd/es/layout/layout';
-import { LoginOutlined } from '@ant-design/icons';
+import { LikeOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
 import { render } from 'react-testing-library';
 import TopItemsList from '../../components/TopItemsList';
 import { PieChartComponent } from '../../components/PieChartComponent';
@@ -47,7 +49,7 @@ const contentStyle = {
   background: '#FFFFFF',
   // background: '#2c343c',
 };
-function StartPage(props) {
+function StartPage({ history }) {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
@@ -59,9 +61,13 @@ function StartPage(props) {
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [user, setUser] = useState([]);
+  const [userProfile, setUserProfile] = useState([]);
+
+  const statsPath = 'stats';
+  const playlistPath = 'playlist';
 
   //   const navigate = useNavigate();
+
   useEffect(() => {
     const hash = window.location.hash;
     let token = window.localStorage.getItem('token');
@@ -79,17 +85,22 @@ function StartPage(props) {
 
     setToken(token);
   }, []);
+
   useEffect(() => {
-    let u = getUser(token);
-    setUser(u);
-    console.log(u);
+    console.log('token', token, !token);
+    if (token != '') {
+      getUser();
+    }
   }, [token]);
 
-  const getUser = async e => {
-    const top = await getUserProfile(token);
-    console.log('top', top);
-    // setArtists(top.items);
-    return top;
+  useEffect(() => {
+    console.log(userProfile);
+  }, [userProfile]);
+
+  const getUser = async () => {
+    const user = await getUserProfile(token);
+    console.log('top', user);
+    setUserProfile(user);
   };
 
   const logout = () => {
@@ -117,35 +128,133 @@ function StartPage(props) {
     setArtists(top.items);
   };
 
-  const routeChangeStats = () => {
-    props.history.push('/stats');
+  const [switchPage, setSwitchPage] = useState(false);
+  const [targetPage, setTargetPage] = useState('');
+
+  //   useEffect(() => {
+  //     if (switchPage) {
+  //       history.push(targetPage);
+  //     }
+  //   }, [switchPage]);
+
+  //   const goToStatsPage = () => {
+  //     setTargetPage('/stats');
+  //     setSwitchPage(true);
+  //   };
+
+  //   const goToPlaylistPage = () => {
+  //     setTargetPage('/playlist');
+  //     setSwitchPage(true);
+  //   };
+
+  const goToStatsPage = () => {
+    history.replace('stats');
   };
-  const routeChangePlaylist = () => {
-    props.history.push('/playlist');
+  const goToHomePage = () => {
+    history.replace('');
+  };
+  const goToPlaylistPage = () => {
+    history.replace('playlist');
   };
   return (
     <div>
       <header className="App-header">
         <Layout>
-          <SpotifyHeader token={token} setToken={setToken} logout={logout} />
+          <SpotifyHeader
+            token={token}
+            setToken={setToken}
+            // goToHomePage={goToHomePage}
+            // goToStatsPage={goToStatsPage}
+            // goToPlaylistPage={goToPlaylistPage}
+            logout={logout}
+          />
           <Content
             style={{
               padding: '50px 50px',
               ...contentStyle,
             }}
           >
+            <Button onClick={logout}>logout</Button>
             {!token ? (
               <LoginModal />
             ) : (
-              <Row>
-                <Empty>User profile</Empty>
-                <Button key="/stats" onClick={routeChangeStats}>
-                  Stats
-                </Button>
-                <Button onClick={routeChangePlaylist} key="/playlist">
-                  Playlist
-                </Button>
-              </Row>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%',
+                }}
+              >
+                <Card
+                  bordered
+                  hoverable
+                  style={{
+                    width: 480,
+                    background: '#1DB954',
+                  }}
+                  cover={
+                    <Image
+                      height={480}
+                      width={480}
+                      preview={false}
+                      src={
+                        (!!userProfile.images &&
+                          !!userProfile.images[0] &&
+                          userProfile.images[0].url) ||
+                        null
+                      }
+                    />
+                  }
+                >
+                  <Card.Meta
+                    title={
+                      '@' + userProfile.id + ' - ' + userProfile.display_name
+                    }
+                    description={
+                      (!!userProfile.external_urls && (
+                        <a
+                          href={userProfile.external_urls.spotify}
+                          target="_blank"
+                        >
+                          {userProfile.external_urls.spotify}
+                        </a>
+                      )) ||
+                      'NA'
+                    }
+                  />
+                </Card>
+                <Row
+                  style={{
+                    width: 480,
+                  }}
+                >
+                  <Button
+                    style={{
+                      width: 240,
+                      background: '#1DB954',
+                    }}
+                    key="/stats"
+                    // onClick={goToStatsPage}
+
+                    onClick={() => history.replace(`/${statsPath}`)}
+                  >
+                    Stats
+                  </Button>
+                  <Button
+                    style={{
+                      width: 240,
+                      background: '#1DB954',
+                    }}
+                    // onClick={goToPlaylistPage}
+                    onClick={() => history.replace(`/${playlistPath}`)}
+                    key="/playlist"
+                  >
+                    Playlist Wizard
+                  </Button>
+                </Row>
+              </div>
             )}
           </Content>
         </Layout>

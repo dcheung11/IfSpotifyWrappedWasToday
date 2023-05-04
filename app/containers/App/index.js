@@ -8,24 +8,27 @@
  */
 
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
-import HomePage from 'containers/HomePage/Loadable';
-import StartPage from '../StartPage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import PlaylistPage from 'containers/PlaylistPage/Loadable';
+import HomePage from 'containers/HomePage';
+import StartPage from 'containers/StartPage';
+import NotFoundPage from 'containers/NotFoundPage';
+import PlaylistPage from 'containers/PlaylistPage';
 
 import GlobalStyle from '../../global-styles';
 
 export default function App() {
+  const Redir = () => <Redirect to="/" />;
+
   return (
     <div>
       <Switch>
+        {/* <Route path="/" component={Redir} /> */}
         <Route exact path="/" component={StartPage} />
-        <Route exact path="/home" component={StartPage} />
+        <Route exact path="/playlist" component={PlaylistPage} />
 
         <Route exact path="/stats" component={HomePage} />
-        <Route exact path="/playlist" component={PlaylistPage} />
+        {/* <Route path="/nptk" component={} /> */}
 
         <Route component={NotFoundPage} />
       </Switch>
