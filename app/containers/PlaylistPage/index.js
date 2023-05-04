@@ -5,6 +5,7 @@ import {
   Carousel,
   Col,
   Empty,
+  Form,
   Image,
   Layout,
   List,
@@ -12,6 +13,7 @@ import {
   Modal,
   Radio,
   Row,
+  Slider,
   Space,
   Tabs,
   Typography,
@@ -109,6 +111,11 @@ function PlaylistPage(props) {
   const goToPlaylistPage = () => {
     history.replace('playlist');
   };
+  const style = {
+    display: 'inline-block',
+    height: 300,
+    marginLeft: 70,
+  };
 
   return (
     <div>
@@ -128,7 +135,22 @@ function PlaylistPage(props) {
               ...contentStyle,
             }}
           >
-            <Empty />
+            <Form>
+              <Form.Item>
+                <div style={style}>
+                  <Slider
+                    vertical
+                    range={{
+                      draggableTrack: true,
+                    }}
+                    defaultValue={[20, 50]}
+                  />
+                </div>
+              </Form.Item>
+              <Form.Item>
+                <Button>Create Playlist</Button>
+              </Form.Item>
+            </Form>
           </Content>
         </Layout>
       </header>

@@ -17,7 +17,7 @@ import {
 import SpotifyLogoBlack from '../../images/spotify-logo.png';
 import { Header } from 'antd/es/layout/layout';
 import { withRouter } from 'react-router-dom';
-
+import './styles.css';
 function SpotifyHeader(props) {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
   const REDIRECT_URI = 'http://localhost:3000/';
@@ -74,13 +74,12 @@ function SpotifyHeader(props) {
           If Spotify Wrapped Was Today...
         </Typography.Title>
         <Button
-          // icon={}
-          // className="login-button"
+          className="custom-button-hover"
           style={{
             marginTop: '22px',
             color: '#1DB954',
-            borderColor: '#1DB954',
-            backgroundColor: '#191414',
+            // borderColor: '#1DB954',
+            // backgroundColor: '#191414',
           }}
           size="large"
           shape="round"
@@ -89,13 +88,12 @@ function SpotifyHeader(props) {
           Home
         </Button>
         <Button
-          // icon={}
-          // className="login-button"
+          className="custom-button-hover"
           style={{
             marginTop: '22px',
             color: '#1DB954',
-            borderColor: '#1DB954',
-            backgroundColor: '#191414',
+            // borderColor: '#1DB954',
+            // backgroundColor: '#191414',
           }}
           size="large"
           shape="round"
@@ -104,19 +102,24 @@ function SpotifyHeader(props) {
           Stats
         </Button>{' '}
         <Button
-          // icon={}
-          className="login-button"
+          className="custom-button-hover"
           style={{
             marginTop: '22px',
             color: '#1DB954',
-            borderColor: '#1DB954',
-            backgroundColor: '#191414',
+            // borderColor: '#1DB954',
+            // backgroundColor: '#191414',
           }}
           size="large"
           shape="round"
           onClick={() => props.history.replace(`/playlist`)}
         >
           Playlist
+        </Button>
+        <Button
+          type="primary"
+          style={{ borderColor: 'red', ':hover': { borderColor: 'green', color:'red' } }}
+        >
+          Click me
         </Button>
         {/* {props.token ? (
             <Button
