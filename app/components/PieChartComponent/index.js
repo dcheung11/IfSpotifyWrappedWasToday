@@ -31,7 +31,7 @@ export function PieChartComponent(props) {
     },
     series: [
       {
-        name: 'Access From',
+        name: 'Genre ',
         type: 'pie',
         radius: '55%',
         center: ['50%', '50%'],

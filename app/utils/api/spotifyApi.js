@@ -23,7 +23,7 @@ export const userTopItemsRequest = async (token, itemType, timePeriod) => {
       },
       params: {
         time_range: timePeriod, // Can be 'short_term', 'medium_term' or 'long_term'
-        limit: 50, // Number of items to return
+        limit: 100, // Number of items to return
       },
     },
   );
@@ -49,7 +49,7 @@ export const getArtist = async (token, id) => {
 //   });
 //   return data;
 // };
-export async function getUser(token) {
+export async function getUserProfile(token) {
   const result = await fetch("https://api.spotify.com/v1/me", {
       method: "GET", headers: { Authorization: `Bearer ${token}` }
   });

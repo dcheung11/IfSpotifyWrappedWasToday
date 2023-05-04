@@ -27,9 +27,10 @@ import { LoginOutlined } from '@ant-design/icons';
 import { render } from 'react-testing-library';
 import TopItemsList from '../../components/TopItemsList';
 import { PieChartComponent } from '../../components/PieChartComponent';
-import { Helmet } from 'react-helmet';
 import { capitalizeFirstLetters, toCamelCase } from '../../utils/transformers';
-import PopularityList from '../../components/PopularityList';
+import PopularityPassport from '../../components/PopularityPassport';
+import './styles.css';
+import { withRouter } from 'react-router-dom';
 const contentStyle = {
   height: '100vh',
   color: '#fff',
@@ -40,7 +41,7 @@ const contentStyle = {
   // background: '#2c343c',
 };
 
-export default function HomePage() {
+function HomePage() {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
@@ -49,7 +50,6 @@ export default function HomePage() {
   // ,user-read-private,user-read-email';
 
   const [token, setToken] = useState('');
-  const [searchKey, setSearchKey] = useState('');
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -122,13 +122,6 @@ export default function HomePage() {
     for (const [genre, count] of Object.entries(genreCount)) {
       genreCountNew.push({ name: genre, value: count });
     }
-    // tracks.forEach(track => {
-    //   track.artists.forEach(artist => {
-    //     // let genres = getArtist(artist.id);
-    //     // console.log(genres);
-    //   });
-    // });
-    console.log(genreCount);
     setGenres(genreCountNew);
   }, [artists, tracks]);
 
@@ -148,17 +141,10 @@ export default function HomePage() {
     }
     return <h3>{description}</h3>;
   };
-  const getTrackImage = m => {
+  const getTrackImage = (m, size) => {
     return !!m.album.images && m.album.images.length ? (
       <Avatar
-        size={{
-          xs: 24,
-          sm: 32,
-          md: 64,
-          lg: 80,
-          xl: 120,
-          xxl: 140,
-        }}
+        size={size}
         width={'100%'}
         src={m.album.images[0].url}
         shape="square"
@@ -180,20 +166,9 @@ export default function HomePage() {
     return <h3>{capitalizeFirstLetters(description)}</h3>;
   };
 
-  const getArtistImage = m => {
+  const getArtistImage = (m, size) => {
     return !!m.images && m.images.length ? (
-      <Avatar
-        size={{
-          xs: 24,
-          sm: 32,
-          md: 64,
-          lg: 80,
-          xl: 120,
-          xxl: 140,
-        }}
-        width={'100%'}
-        src={m.images[0].url}
-      />
+      <Avatar size={size} width={'100%'} src={m.images[0].url} />
     ) : (
       <div>No Image</div>
     );
@@ -210,7 +185,7 @@ export default function HomePage() {
         <Layout>
           <Header
             style={{
-              position: 'sticky',
+              // position: 'sticky',
               top: 0,
               zIndex: 1,
               width: '100%',
@@ -267,10 +242,11 @@ export default function HomePage() {
           <Content
             style={{
               padding: '50px 50px',
+
               ...contentStyle,
             }}
           >
-            <div
+            {/* <div
               style={{
                 height: '10vh',
                 display: 'flex',
@@ -288,17 +264,26 @@ export default function HomePage() {
                   }
                 />
               ) : (
-                <div style={{ textAlign: 'center' }}>
-                  <Radio.Group onChange={handleGo} defaultValue="medium_term">
-                    {/* <Space direction="vertical"> */}
-                    <Radio.Button value="short_term">1 month</Radio.Button>
-                    <Radio.Button value="medium_term">6 month</Radio.Button>
-                    <Radio.Button value="long_term">All time</Radio.Button>
-                    {/* </Space> */}
-                  </Radio.Group>
-                </div>
+                'placehold'
               )}
+            </div> */}
+            <div style={{ textAlign: 'center' }}>
+              <Radio.Group
+                // style={{ color: 'red' }}
+                className="custom-radio-style"
+                buttonStyle="solid"
+                size="large"
+                onChange={handleGo}
+                defaultValue="medium_term"
+              >
+                {/* <Space direction="vertical"> */}
+                <Radio.Button value="short_term">Short Term</Radio.Button>
+                <Radio.Button value="medium_term">Medium Term</Radio.Button>
+                <Radio.Button value="long_term">Long Term</Radio.Button>
+                {/* </Space> */}
+              </Radio.Group>
             </div>
+            <br />
             <Tabs
               tabBarStyle={{}}
               centered
@@ -313,6 +298,7 @@ export default function HomePage() {
                     <div>
                       {/* <h3 style={contentStyle}> */}
                       <TopItemsList
+                        handleGo={handleGo}
                         itemType="Tracks"
                         // renderItem={renderTracks()}
                         data={tracks}
@@ -330,6 +316,7 @@ export default function HomePage() {
                     <div>
                       {/* <h3 style={contentStyle}> */}
                       <TopItemsList
+                        handleGo={handleGo}
                         itemType="Artists"
                         // renderItem={renderTracks()}
                         data={artists}
@@ -385,7 +372,12 @@ export default function HomePage() {
                   key: '4',
                   children: (
                     <div>
-                      <PopularityList />
+                      <PopularityPassport
+                        tracks={tracks}
+                        artists={artists}
+                        getArtistImage={getArtistImage}
+                        getTrackImage={getTrackImage}
+                      />
                     </div>
                   ),
                 },
@@ -397,3 +389,4 @@ export default function HomePage() {
     </div>
   );
 }
+export default withRouter(HomePage);

@@ -1,0 +1,17 @@
+.custom-radio-style .ant-radio-inner {
+    background-color: blue;
+    border-color: green;
+  }
+
+.custom-radio-style .ant-radio-wrapper {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 4px;
+  }
+  
+.custom-radio-style.ant-radio-wrapper-checked {
+    border: 2px solid blue;
+    border-radius: 8px;
+    padding: 4px;
+  }
+  
