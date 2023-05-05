@@ -265,31 +265,6 @@ function HomePage() {
                       />
                       {/* </h3> */}
                     </div>
-                    // <div>
-                    //   {/* <h3 style={contentStyle}> */}
-                    //   <List
-                    //     pagination
-                    //     size="small"
-                    //     header={<h3>Top a of 2023</h3>}
-                    //     bordered
-                    //     dataSource={renderArtists()}
-                    //     renderItem={(item, index) => (
-                    //       <List.Item>
-                    //         <div key={index}>
-                    //           <Row>
-                    //             <List.Item.Meta
-                    //               avatar={item.avatar}
-                    //               // title={item.name}
-                    //               // description={item.name}
-                    //             />
-                    //             {index + 1} . {item.name}
-                    //           </Row>
-                    //         </div>
-                    //       </List.Item>
-                    //     )}
-                    //   />
-                    //   {/* </h3> */}
-                    // </div>
                   ),
                 },
                 {

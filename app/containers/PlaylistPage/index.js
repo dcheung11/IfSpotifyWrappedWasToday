@@ -13,6 +13,7 @@ import {
   Modal,
   Radio,
   Row,
+  Select,
   Slider,
   Space,
   Tabs,
@@ -21,7 +22,12 @@ import {
 import React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  addItemsToPlaylist,
+  createPlaylist,
+  getGenreSeeds,
+  getRecommendations,
   getUser,
+  getUserProfile,
   searchArtistsRequest,
   userTopItemsRequest,
 } from '../../utils/api/spotifyApi';
@@ -36,9 +42,12 @@ import SpotifyLogoGreen from '../../images/spotify-logo-green.png';
 import LoginModal from '../../components/LoginModal';
 import SpotifyHeader from '../../components/SpotifyHeader';
 import { withRouter } from 'react-router-dom';
+import { get } from 'lodash';
+import RecommendationForm from '../../components/RecommendationForm';
 
 const contentStyle = {
   height: '100vh',
+  //   width: '100vh',
   color: '#fff',
   // lineHeight: '480px',
   // textAlign: 'center',
@@ -59,6 +68,10 @@ function PlaylistPage(props) {
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [seedInfo, setSeedInfo] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [userProfile, setUserProfile] = useState([]);
+  const [newPlaylist, setNewPlaylist] = useState([]);
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -78,30 +91,38 @@ function PlaylistPage(props) {
     setToken(token);
   }, []);
 
+  useEffect(() => {
+    if (token != '') {
+      topTracks();
+      topArtists();
+      getGenres();
+      getUser();
+    }
+  }, [token]);
+
+  const getUser = async () => {
+    const user = await getUserProfile(token);
+    console.log('top', user);
+    setUserProfile(user);
+  };
+
   const logout = () => {
     setToken('');
     window.localStorage.removeItem('token');
   };
 
-  const handleGo = e => {
-    console.log(e);
-    topTracks(e);
-    topArtists(e);
-  };
-
-  const topTracks = async e => {
-    e.preventDefault();
-    const top = await userTopItemsRequest(token, 'tracks', e.target.value);
+  const topTracks = async () => {
+    const top = await userTopItemsRequest(token, 'tracks', 'long_term');
     console.log('top', top.items);
     setTracks(top.items);
   };
 
-  const topArtists = async e => {
-    e.preventDefault();
-    const top = await userTopItemsRequest(token, 'artists', e.target.value);
+  const topArtists = async () => {
+    const top = await userTopItemsRequest(token, 'artists', 'long_term');
     console.log('top', top.items);
     setArtists(top.items);
   };
+
   const goToStatsPage = () => {
     history.replace('stats');
   };
@@ -117,6 +138,84 @@ function PlaylistPage(props) {
     marginLeft: 70,
   };
 
+  const onFinish = values => {
+    console.log('Form values:', values);
+    setSeedInfo(values);
+  };
+  useEffect(() => {
+    if (token != '') {
+      getReco();
+    }
+  }, [seedInfo]);
+
+  const getReco = async () => {
+    const reco = await getRecommendations(token, seedInfo);
+    console.log('reco', reco);
+    setRecommendations(reco);
+  };
+
+  const getGenres = async () => {
+    const genreSeeds = await getGenreSeeds(token);
+    console.log('reco', genreSeeds);
+    setGenres(genreSeeds);
+  };
+
+  const [artistsSelected, setArtistsSelected] = useState(0);
+  const [genresSelected, setGenresSelected] = useState(0);
+  const [tracksSelected, setTracksSelected] = useState(0);
+
+  const handleArtistChange = value => {
+    setArtistsSelected(value.length);
+  };
+  const handleTrackChange = value => {
+    setTracksSelected(value.length);
+  };
+  const handleGenreChange = value => {
+    setGenresSelected(value.length);
+  };
+  const getTrackDescription = m => {
+    let description;
+    if (m.artists.length === 1) {
+      description = m.artists[0].name;
+    } else {
+      description = m.artists[0].name + ' with ';
+      for (let i = 1; i < m.artists.length; i++) {
+        description += m.artists[i].name;
+        // If this is not the last artist, add a comma and space
+        if (i < m.artists.length - 1) {
+          description += ', ';
+        }
+      }
+    }
+    return description;
+  };
+
+  const handleCreatePlaylist = async e => {
+    e.preventDefault();
+    console.log(userProfile);
+    const playlist = await createPlaylist(
+      token,
+      'TEST DAMIEN APP',
+      userProfile.id,
+    );
+    console.log('new', newPlaylist);
+    setNewPlaylist(playlist);
+  };
+
+  const addToPlaylist = async () => {
+    console.log(userProfile);
+    const playlist = await addItemsToPlaylist(
+      token,
+      newPlaylist.id,
+      recommendations.tracks.map(track => track.uri),
+    );
+  };
+
+  useEffect(() => {
+    console.log('new', newPlaylist);
+
+    addToPlaylist();
+  }, [newPlaylist]);
   return (
     <div>
       <header className="App-header">
@@ -135,22 +234,53 @@ function PlaylistPage(props) {
               ...contentStyle,
             }}
           >
-            <Form>
-              <Form.Item>
-                <div style={style}>
-                  <Slider
-                    vertical
-                    range={{
-                      draggableTrack: true,
-                    }}
-                    defaultValue={[20, 50]}
+            <RecommendationForm
+              artists={artists}
+              tracks={tracks}
+              genres={genres}
+              onFinish={onFinish}
+            />
+
+            <Card style={{ textAlign: 'center' }}>
+              <Typography.Title>
+                {(!!userProfile.display_name &&
+                  userProfile.display_name + "'s custom playlist...") ||
+                  'Your custom playlist...'}
+              </Typography.Title>
+              {!recommendations.tracks ? (
+                <Empty description="Get your custom playlist" />
+              ) : (
+                <>
+                  <List
+                    // pagination={paginationProps}
+                    bordered
+                    size="small"
+                    dataSource={recommendations.tracks}
+                    grid={{ column: 3 }}
+                    renderItem={(m, k) => (
+                      <List.Item>
+                        <List.Item.Meta
+                          avatar={
+                            !!m.album.images[0] && (
+                              <Avatar src={m.album.images[0].url || null} />
+                            )
+                          }
+                          title={
+                            <a href={m.external_urls.spotify} target="_blank">
+                              {/* <h2> */}
+                              {k + 1}. {m.name} by {getTrackDescription(m)}
+                              {/* </h2> */}
+                            </a>
+                          }
+                        />
+                        {/* {m.duration_ms} */}
+                      </List.Item>
+                    )}
                   />
-                </div>
-              </Form.Item>
-              <Form.Item>
-                <Button>Create Playlist</Button>
-              </Form.Item>
-            </Form>
+                  <Button onClick={handleCreatePlaylist}>Create</Button>
+                </>
+              )}
+            </Card>
           </Content>
         </Layout>
       </header>

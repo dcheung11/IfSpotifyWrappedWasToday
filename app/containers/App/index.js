@@ -26,7 +26,6 @@ export default function App() {
         {/* <Route path="/" component={Redir} /> */}
         <Route exact path="/" component={StartPage} />
         <Route exact path="/playlist" component={PlaylistPage} />
-
         <Route exact path="/stats" component={HomePage} />
         {/* <Route path="/nptk" component={} /> */}
 

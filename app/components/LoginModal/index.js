@@ -20,7 +20,7 @@ export default function LoginModal(props) {
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
-  const SCOPE = 'user-top-read';
+  const SCOPE = ['user-top-read', 'playlist-modify-public'];
   // ,user-read-private,user-read-email';
 
   const [token, setToken] = useState('');
