@@ -5,8 +5,8 @@ import { PopularityScatter } from '../PopularityScatter';
 
 export default function PopularityPassport(props) {
   let listSize = 5;
-  let tracks = props.tracks;
-  let artists = props.artists;
+  let tracks = Object.values(props.tracks);
+  let artists = Object.values(props.artists);
   let mostPopularTracks = tracks
     .sort(function(a, b) {
       return b.popularity - a.popularity;

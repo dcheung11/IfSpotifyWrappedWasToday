@@ -24,38 +24,6 @@ function SpotifyHeader(props) {
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
   const SCOPE = 'user-top-read';
-  // const [token, setToken] = useState('');
-  const routeChange = e => {
-    console.log(e);
-    // props.history.replace(path);
-  };
-
-  // useEffect(() => {
-  //   const hash = window.location.hash;
-  //   let token = window.localStorage.getItem('token');
-
-  //   if (!token && hash) {
-  //     token = hash
-  //       .substring(1)
-  //       .split('&')
-  //       .find(elem => elem.startsWith('access_token'))
-  //       .split('=')[1];
-
-  //     window.location.hash = '';
-  //     window.localStorage.setItem('token', token);
-  //   }
-
-  //   props.setToken(token);
-  // }, []);
-  // const menu = [
-  //   { key: 0, label: 'Spotfiy Wrapped Mini' },
-  //   { key: 1, label: 'Playlist Wizard' },
-  // ];
-
-  // const logout = () => {
-  //   setToken('');
-  //   window.localStorage.removeItem('token');
-  // };
 
   return (
     <Header
@@ -71,7 +39,7 @@ function SpotifyHeader(props) {
       <Row>
         {/* <Space size={'large'}> */}
         <Typography.Title style={{ color: '#1DB954' }}>
-          If Spotify Wrapped Was Today...
+          My Spotify.99 
         </Typography.Title>
         <Button
           className="custom-button-hover"
@@ -117,7 +85,10 @@ function SpotifyHeader(props) {
         </Button>
         <Button
           type="primary"
-          style={{ borderColor: 'red', ':hover': { borderColor: 'green', color:'red' } }}
+          style={{
+            borderColor: 'red',
+            ':hover': { borderColor: 'green', color: 'red' },
+          }}
         >
           Click me
         </Button>

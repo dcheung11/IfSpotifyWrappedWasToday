@@ -18,9 +18,12 @@ import React from 'react';
 import messages from './messages';
 import { useEffect, useState } from 'react';
 import {
+  getArtists,
+  getTrackFeatures,
   getUser,
   searchArtistsRequest,
   userTopItemsRequest,
+  userTopItemsSecondRequest,
 } from '../../utils/api/spotifyApi';
 import { Content, Footer, Header } from 'antd/es/layout/layout';
 import { LoginOutlined } from '@ant-design/icons';
@@ -32,6 +35,7 @@ import PopularityPassport from '../../components/PopularityPassport';
 import './styles.css';
 import { withRouter } from 'react-router-dom';
 import SpotifyHeader from '../../components/SpotifyHeader';
+import TrackAnalysisPassport from '../../components/TrackAnalysisPassport';
 const contentStyle = {
   height: '100vh',
   color: '#fff',
@@ -42,7 +46,7 @@ const contentStyle = {
   // background: '#2c343c',
 };
 
-function HomePage() {
+function StatsPage() {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
@@ -52,8 +56,12 @@ function HomePage() {
 
   const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([]);
+  const [trackArtists, setTrackArtists] = useState([]);
+
   const [artists, setArtists] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [timePeriod, setTimePeriod] = useState('long_term');
+  const [trackAnalysis, setTrackAnalysis] = useState([]);
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -73,12 +81,12 @@ function HomePage() {
     setToken(token);
   }, []);
 
-  // useEffect(() => {
-
-  //     const profile = getUser(token);
-  //     console.log(profile); // Profile data logs to console
-
-  // }, [token]);
+  useEffect(() => {
+    if (token != '') {
+      topTracks();
+      topArtists();
+    }
+  }, [token]);
 
   const logout = () => {
     setToken('');
@@ -86,38 +94,118 @@ function HomePage() {
   };
 
   const handleGo = e => {
-    console.log(e);
-    topTracks(e);
-    topArtists(e);
+    setTimePeriod(e.target.value);
+    // console.log(e);
+    // topTracks(e);
+    // topArtists(e);
   };
-
-  // const getArtist = async id => {
-  //   // e.preventDefault();
-  //   const artist = await getArtist(token, id);
-  //   return artist;
-  // };
+  useEffect(() => {
+    if (token != '') {
+      topTracks();
+      topArtists();
+    }
+  }, [timePeriod]);
 
   const topTracks = async e => {
-    e.preventDefault();
-    const top = await userTopItemsRequest(token, 'tracks', e.target.value);
-    console.log('top', top.items);
-    setTracks(top.items);
+    if (e) {
+      e.preventDefault();
+    }
+    const topTracks1 = await userTopItemsRequest(token, 'tracks', timePeriod);
+    const topTracks2 = await userTopItemsSecondRequest(
+      token,
+      'tracks',
+      timePeriod,
+    );
+
+    const topTracks = Array.isArray(topTracks1.items)
+      ? topTracks1.items.concat(topTracks2.items)
+      : [];
+    const myDict = topTracks.reduce((acc, curr, index) => {
+      acc[index + 1] = curr;
+      return acc;
+    }, {});
+    // console.log('top99Tracks', myDict);
+    setTracks(myDict);
   };
 
   const topArtists = async e => {
-    e.preventDefault();
-    const top = await userTopItemsRequest(token, 'artists', e.target.value);
-    console.log('top', top.items);
-    setArtists(top.items);
+    if (e) {
+      e.preventDefault();
+    }
+    const topArtists1 = await userTopItemsRequest(token, 'artists', timePeriod);
+    const topArtists2 = await userTopItemsSecondRequest(
+      token,
+      'artists',
+      timePeriod,
+    );
+    const topArtists = Array.isArray(topArtists1.items)
+      ? topArtists1.items.concat(topArtists2.items)
+      : [];
+
+    const myDict = topArtists.reduce((acc, curr, index) => {
+      acc[index + 1] = curr;
+      return acc;
+    }, {});
+    // console.log('top99Tracks', myDict);
+    setArtists(myDict);
+  };
+
+  const trackFeatures = async () => {
+    // console.log(tracks);
+    const trackIds = Object.values(tracks).map(track => track.id);
+
+    const trackInfo = await getTrackFeatures(token, trackIds);
+
+    setTrackAnalysis(trackInfo);
+  };
+
+  const getTrackArtistsGenres = async artistIds => {
+    const trackInfo = await getArtists(token, artistIds);
+    setTrackArtists(trackInfo);
   };
 
   useEffect(() => {
-    let genreCount = {};
-    artists.forEach(artist => {
+    let tempGenres = genres;
+    const genreCount = tempGenres.reduce((acc, curr) => {
+      acc[curr.name] = curr.value;
+      return acc;
+    }, {});
+    console.log('tr', trackArtists);
+
+    (trackArtists.artists ? trackArtists.artists : []).forEach(artist => {
       artist.genres.forEach(genre => {
         genreCount[genre] = (!!genreCount[genre] && genreCount[genre] + 1) || 1;
       });
     });
+    // console.log('genreco', genreCount);
+    let genreCountNew = []; // initialize an empty array to hold the transformed data
+
+    for (const [genre, count] of Object.entries(genreCount)) {
+      genreCountNew.push({ name: genre, value: count });
+    }
+    setGenres(genreCountNew);
+  }, [trackArtists]);
+
+  useEffect(() => {
+    if (tracks != [] && !!tracks) {
+      trackFeatures();
+    }
+    let genreCount = {};
+    let trackArtistsSet = [];
+    Object.values(tracks).forEach(track => {
+      track.artists.forEach(a => {
+        trackArtistsSet.push(a.id);
+      });
+    });
+    if (artists != [] && !!artists) {
+      getTrackArtistsGenres(trackArtistsSet.slice(0, 49));
+    }
+    Object.values(artists).forEach(artist => {
+      artist.genres.forEach(genre => {
+        genreCount[genre] = (!!genreCount[genre] && genreCount[genre] + 1) || 1;
+      });
+    });
+
     let genreCountNew = []; // initialize an empty array to hold the transformed data
 
     for (const [genre, count] of Object.entries(genreCount)) {
@@ -207,14 +295,17 @@ function HomePage() {
               ...contentStyle,
             }}
           >
-            <div style={{ textAlign: 'center' }}>
+            <Card style={{ textAlign: 'center' }}>
+              <Typography.Title>Spotify 99 Stats</Typography.Title>
+              <br />
+
               <Radio.Group
                 // style={{ color: 'red' }}
                 className="custom-radio-style"
                 buttonStyle="solid"
                 size="large"
                 onChange={handleGo}
-                defaultValue="medium_term"
+                defaultValue="long_term"
               >
                 {/* <Space direction="vertical"> */}
                 <Radio.Button value="short_term">Short Term</Radio.Button>
@@ -222,7 +313,7 @@ function HomePage() {
                 <Radio.Button value="long_term">Long Term</Radio.Button>
                 {/* </Space> */}
               </Radio.Group>
-            </div>
+            </Card>
             <br />
             <Tabs
               tabBarStyle={{}}
@@ -296,12 +387,22 @@ function HomePage() {
                     </div>
                   ),
                 },
+                {
+                  label: 'Analysis',
+                  key: '5',
+                  children: (
+                    <div>
+                      <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
+                    </div>
+                  ),
+                },
               ]}
             />
           </Content>
+          {/* <Footer /> */}
         </Layout>
       </header>
     </div>
   );
 }
-export default withRouter(HomePage);
+export default withRouter(StatsPage);

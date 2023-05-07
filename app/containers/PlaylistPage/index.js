@@ -7,6 +7,7 @@ import {
   Empty,
   Form,
   Image,
+  Input,
   Layout,
   List,
   Menu,
@@ -112,7 +113,7 @@ function PlaylistPage(props) {
   };
 
   const topTracks = async () => {
-    const top = await userTopItemsRequest(token, 'tracks', 'long_term');
+    const top = await userTopItemsRequest(token, 'tracks', 'short_term');
     console.log('top', top.items);
     setTracks(top.items);
   };
@@ -139,7 +140,7 @@ function PlaylistPage(props) {
   };
 
   const onFinish = values => {
-    console.log('Form values:', values);
+    console.log(playlistLimit);
     setSeedInfo(values);
   };
   useEffect(() => {
@@ -148,8 +149,10 @@ function PlaylistPage(props) {
     }
   }, [seedInfo]);
 
+  const [playlistLimit, setPlaylistLimit] = useState(20);
+
   const getReco = async () => {
-    const reco = await getRecommendations(token, seedInfo);
+    const reco = await getRecommendations(token, seedInfo, playlistLimit);
     console.log('reco', reco);
     setRecommendations(reco);
   };
@@ -160,19 +163,6 @@ function PlaylistPage(props) {
     setGenres(genreSeeds);
   };
 
-  const [artistsSelected, setArtistsSelected] = useState(0);
-  const [genresSelected, setGenresSelected] = useState(0);
-  const [tracksSelected, setTracksSelected] = useState(0);
-
-  const handleArtistChange = value => {
-    setArtistsSelected(value.length);
-  };
-  const handleTrackChange = value => {
-    setTracksSelected(value.length);
-  };
-  const handleGenreChange = value => {
-    setGenresSelected(value.length);
-  };
   const getTrackDescription = m => {
     let description;
     if (m.artists.length === 1) {
@@ -193,11 +183,7 @@ function PlaylistPage(props) {
   const handleCreatePlaylist = async e => {
     e.preventDefault();
     console.log(userProfile);
-    const playlist = await createPlaylist(
-      token,
-      'TEST DAMIEN APP',
-      userProfile.id,
-    );
+    const playlist = await createPlaylist(token, playlistName, userProfile.id);
     console.log('new', newPlaylist);
     setNewPlaylist(playlist);
   };
@@ -216,6 +202,19 @@ function PlaylistPage(props) {
 
     addToPlaylist();
   }, [newPlaylist]);
+
+  const [playlistName, setPlaylistName] = useState(
+    (!!userProfile.display_name &&
+      userProfile.display_name + "'s custom playlist...") ||
+      'Your custom playlist...',
+  );
+
+  const handleTextChange = event => {
+    console.log(event);
+
+    setPlaylistName(event);
+  };
+
   return (
     <div>
       <header className="App-header">
@@ -239,13 +238,19 @@ function PlaylistPage(props) {
               tracks={tracks}
               genres={genres}
               onFinish={onFinish}
+              //   playlistLimit={playlistLimit}
+              setPlaylistLimit={setPlaylistLimit}
             />
 
             <Card style={{ textAlign: 'center' }}>
-              <Typography.Title>
-                {(!!userProfile.display_name &&
+              <Typography.Text style={{ fontSize: '20px' }}>
+                3. Create your playlist
+              </Typography.Text>
+              <Typography.Title editable={{ onChange: handleTextChange }}>
+                {/* {(!!userProfile.display_name &&
                   userProfile.display_name + "'s custom playlist...") ||
-                  'Your custom playlist...'}
+                  'Your custom playlist...'} */}
+                {playlistName}
               </Typography.Title>
               {!recommendations.tracks ? (
                 <Empty description="Get your custom playlist" />

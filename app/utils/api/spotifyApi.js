@@ -24,7 +24,59 @@ export const userTopItemsRequest = async (token, itemType, timePeriod) => {
       },
       params: {
         time_range: timePeriod, // Can be 'short_term', 'medium_term' or 'long_term'
-        limit: 100, // Number of items to return
+        limit: 49, // Number of items to return
+      },
+    },
+  );
+  return data;
+};
+export const userTopItemsSecondRequest = async (
+  token,
+  itemType,
+  timePeriod,
+) => {
+  console.log(token);
+  const { data } = await axios.get(
+    `https://api.spotify.com/v1/me/top/${itemType}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        time_range: timePeriod, // Can be 'short_term', 'medium_term' or 'long_term'
+        limit: 50, // Number of items to return
+        offset: 49,
+      },
+    },
+  );
+  return data;
+};
+
+export const getArtists = async (token, artistIds) => {
+  const n = (!!artistIds && artistIds.join(',')) || undefined;
+  // console.log(n);
+  const { data } = await axios.get(`https://api.spotify.com/v1/artists`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      ids: n,
+    },
+  });
+  return data;
+};
+
+export const getTrackFeatures = async (token, trackIds) => {
+  const n = (!!trackIds && trackIds.join(',')) || undefined;
+  // console.log(n);
+  const { data } = await axios.get(
+    `https://api.spotify.com/v1/audio-features`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        ids: n,
       },
     },
   );
@@ -41,15 +93,6 @@ export const getArtist = async (token, id) => {
   return data;
 };
 
-// export const getUser = async (token) => {
-//   console.log(token);
-//   const { data } = await axios.get(`https://api.spotify.com/v1/me`, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-//   return data;
-// };
 export async function getUserProfile(token) {
   const result = await fetch('https://api.spotify.com/v1/me', {
     method: 'GET',
@@ -61,46 +104,54 @@ export async function getUserProfile(token) {
 export async function getRecommendations(
   token,
   values,
+  limit,
   // target_acoustics,
   // target_danceability,
   // target_energy,
 ) {
   console.log(token);
-  // console.log(values);
-  // const filteredDict = Object.fromEntries(
-  //   Object.entries(values)
-  //     .filter(([key, value]) => value !== undefined)
-  //     .map(([key, value]) => {
-  //       if (Array.isArray(value)) {
-  //         value = value.join(',');
-  //       }
-  //       return [key, value];
-  //     }),
-  // );
-  // const w = Object.fromEntries(entries);
-  // console.log('val', filteredDict);
 
+  const params = {
+    limit: limit,
+    seed_artists:
+      (!!values.seed_artists && values.seed_artists.join(',')) || undefined,
+    seed_tracks:
+      (!!values.seed_tracks && values.seed_tracks.join(',')) || undefined,
+    seed_genres:
+      (!!values.seed_genres && values.seed_genres.join(',')) || undefined,
+    min_acousticness: values.acousticness ? values.acousticness[0] : undefined,
+    max_acousticness: values.acousticness ? values.acousticness[1] : undefined,
+    min_danceability: values.danceability ? values.danceability[0] : undefined,
+    max_danceability: values.danceability ? values.danceability[1] : undefined,
+    min_energy: values.energy ? values.energy[0] : undefined,
+    max_energy: values.energy ? values.energy[1] : undefined,
+    min_instrumentalness: values.instrumentalness
+      ? values.instrumentalness[0]
+      : undefined,
+    max_instrumentalness: values.instrumentalness
+      ? values.instrumentalness[1]
+      : undefined,
+    // min_liveness: values.liveness ? values.liveness[0] : undefined,
+    // max_liveness: values.liveness ? values.liveness[1] : undefined,
+    // min_loudness: values.loudness ? values.loudness[0] : undefined,
+    // max_loudness: values.loudness ? values.loudness[1] : undefined,
+    min_popularity: values.popularity ? values.popularity[0] : undefined,
+    max_popularity: values.popularity ? values.popularity[1] : undefined,
+    min_speechiness: values.speechiness ? values.speechiness[0] : undefined,
+    max_speechiness: values.speechiness ? values.speechiness[1] : undefined,
+    min_tempo: values.tempo ? values.tempo[0] : undefined,
+    max_tempo: values.tempo ? values.tempo[1] : undefined,
+    min_valence: values.valence ? values.valence[0] : undefined,
+    max_valence: values.valence ? values.valence[1] : undefined,
+  };
+  console.log(params);
   const { data } = await axios.get(
     `https://api.spotify.com/v1/recommendations`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      params: {
-        seed_artists: values.seed_artists.join(','),
-        seed_tracks: values.seed_tracks.join(','),
-        seed_genres: values.seed_genres.join(','),
-        target_acousticness: values.target_acousticness,
-        target_danceability: values.target_danceability,
-        target_energy: values.target_energy,
-        target_instrumentalness: values.target_instrumentalness,
-        target_liveness: values.target_liveness,
-        target_loudness: values.target_loudness,
-        target_popularity: values.target_popularity,
-        target_speechiness: values.target_speechiness,
-        target_tempo: values.target_tempo,
-        target_valence: values.target_valence,
-      },
+      params: params,
     },
   );
   return data;

@@ -32,7 +32,7 @@ const avatarSize = {
   xxl: 140,
 };
 export default function TopItemsList(props) {
-  console.log(props);
+  // console.log(props);
   return (
     <>
       <List
@@ -41,7 +41,7 @@ export default function TopItemsList(props) {
         grid={{ column: 3 }}
         // header={<h2 style={{alignText: "center"}}>Top {props.itemType} of 2023</h2>}
         // bordered
-        dataSource={props.data}
+        dataSource={Object.values(props.data)}
         renderItem={(m, k) => (
           <List.Item>
             <List.Item.Meta

@@ -5,6 +5,7 @@ import {
   Col,
   Form,
   Image,
+  InputNumber,
   List,
   Menu,
   Modal,
@@ -15,6 +16,7 @@ import {
   Skeleton,
   Slider,
   Space,
+  Tooltip,
   Typography,
 } from 'antd';
 import SpotifyLogoBlack from '../../images/spotify-logo.png';
@@ -28,50 +30,100 @@ function RecommendationForm(props) {
   const SCOPE = 'user-top-read';
 
   const tuners = {
-    target_acousticness: 'Acousticness🎸',
-    target_danceability: 'Danceability💃',
-    target_energy: 'Energy🔋',
-    target_instrumentalness: 'Instrumentalness🎷',
-    target_liveness: 'Liveness☀',
-    target_loudness: 'Loudness🔊',
-    target_popularity: 'Popularity😎',
-    target_speechiness: 'Speechiness💬',
-    target_tempo: 'Tempo🥁',
-    target_valence: 'Valence➕',
+    acousticness: ['Acousticness🎸', 1],
+    danceability: ['Danceability💃', 1],
+    energy: ['Energy🔋', 1],
+    instrumentalness: ['Instrumentalness🎷', 1],
+    // liveness: ['Liveness☀', 1],
+    // loudness: ['Loudness🔊', 1],
+    popularity: ['Popularity😎', 100],
+    speechiness: ['Speechiness💬', 1],
+    tempo: ['Tempo🥁', 200],
+    valence: ['Valence➕', 1],
+  };
+  const tunersDescriptions = {
+    acousticness:
+      'A confidence measure from 0.0 to 1.0 of whether the track is acoustic.',
+    danceability:
+      'Describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.',
+    energy:
+      'Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.',
+    instrumentalness:
+      'Predicts whether a track contains no vocals. The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content.',
+    popularity:
+      'The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are.',
+    speechiness: 'Speechiness detects the presence of spoken words in a track.',
+    tempo:
+      'Overall estimated tempo of a track in beats per minute (BPM). Tempo is the speed or pace of a given piece.',
+    valence:
+      'Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).',
   };
   const items = Object.entries(tuners);
   const grid = [];
-  const marks = {
-    0: '0',
-    1: '1',
-  };
 
   for (let i = 0; i < items.length; i += 2) {
     const item1 = items[i];
     const item2 = items[i + 1];
+    const max1 = item1[1][1];
+    const max2 = item2[1][1];
+    const marks1 = {
+      0: '0',
+      [max1]: String(max1),
+    };
+    const marks2 = {
+      0: '0',
+      [max2]: String(max2),
+    };
+
     grid.push(
       <Row key={i}>
         <Col span={1} />
         <Col span={10}>
-          <Typography.Text style={{ fontSize: '16px' }}>
-            {item1 && <div>{item1[1]}</div>}
-          </Typography.Text>
-          <Form.Item name={item1[0]}>
-            <Slider marks={marks} step={0.01} max={1} defaultValue={0} />
-          </Form.Item>
+          <Tooltip title={tunersDescriptions[item1[0]]}>
+            <Typography.Text style={{ fontSize: '16px' }}>
+              {item1 && <div>{item1[1][0]}</div>}
+            </Typography.Text>
+
+            <Form.Item name={item1[0]}>
+              <Slider
+                range={{
+                  draggableTrack: true,
+                }}
+                marks={marks1}
+                max={item1[1][1]}
+                step={item1[1][1] / 100}
+                defaultValue={[0, max1]}
+              />
+            </Form.Item>
+          </Tooltip>
         </Col>
         <Col span={2} />
         <Col span={10}>
-          <Typography.Text style={{ fontSize: '16px' }}>
-            {item2 && <div>{item2[1]}</div>}
-          </Typography.Text>
-          <Form.Item name={item2[0]}>
-            <Slider marks={marks} step={0.01} max={1} defaultValue={0} />
-          </Form.Item>
+          <Tooltip title={tunersDescriptions[item2[0]]}>
+            <Typography.Text style={{ fontSize: '16px' }}>
+              {item2 && <div>{item2[1][0]}</div>}
+            </Typography.Text>
+
+            <Form.Item name={item2[0]}>
+              <Slider
+                range={{
+                  draggableTrack: true,
+                }}
+                marks={marks2}
+                step={item2[1][1] / 100}
+                max={item2[1][1]}
+                defaultValue={[0, max2]}
+              />
+            </Form.Item>
+          </Tooltip>
         </Col>
       </Row>,
     );
   }
+
+  const handlePlaylistSize = value => {
+    console.log('changed', value);
+  };
 
   return (
     <Form
@@ -200,25 +252,29 @@ function RecommendationForm(props) {
       </Card>
       <Card style={{ textAlign: 'center' }}>
         <Typography.Text style={{ fontSize: '20px' }}>
-          2. Adjust Target Tuners from 0-1
+          2. Get more specific tracks by tuning your playlist!
         </Typography.Text>
         <br />
         <br />
 
-        {/* {Object.keys(tuners).map(name => {
-          return (
-            <Col span={12}>
-              {tuners[name]}
-              <Form.Item name={name}>
-                <Slider step={0.01} max={1} defaultValue={0} />
-              </Form.Item>
-            </Col>
-          );
-        })} */}
         {grid}
+        <Typography.Text style={{ fontSize: '20px' }}>
+          3. Set a song limit and get your recommendations!
+        </Typography.Text>
+        <br />
+        <br />
+
+        <InputNumber
+          min={1}
+          max={50}
+          defaultValue={20}
+          onChange={props.setPlaylistLimit}
+        />
+        <br />
+        <br />
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Submit
+            Get Recommendations
           </Button>
         </Form.Item>
       </Card>
