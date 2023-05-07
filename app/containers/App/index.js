@@ -16,6 +16,7 @@ import NotFoundPage from 'containers/NotFoundPage';
 import PlaylistPage from 'containers/PlaylistPage';
 
 import GlobalStyle from '../../global-styles';
+import ExplorePage from '../ExplorePage';
 
 export default function App() {
   const Redir = () => <Redirect to="/" />;
@@ -27,8 +28,7 @@ export default function App() {
         <Route exact path="/" component={StartPage} />
         <Route exact path="/playlist" component={PlaylistPage} />
         <Route exact path="/stats" component={StatsPage} />
-        {/* <Route path="/nptk" component={} /> */}
-
+        <Route exact path="/explore" component={ExplorePage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

@@ -14,6 +14,19 @@ export const searchArtistsRequest = async (token, searchKey) => {
   return data.artists.items;
 };
 
+export const searchTrackRequest = async (token, searchKey) => {
+  const { data } = await axios.get('https://api.spotify.com/v1/search', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      q: searchKey,
+      type: 'track',
+    },
+  });
+  return data.tracks.items;
+};
+
 export const userTopItemsRequest = async (token, itemType, timePeriod) => {
   console.log(token);
   const { data } = await axios.get(
@@ -66,6 +79,37 @@ export const getArtists = async (token, artistIds) => {
   return data;
 };
 
+export const getRelatedArtists = async (token, artistId) => {
+  // console.log(n);
+  const { data } = await axios.get(
+    `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return data;
+};
+
+export const getArtistTopTracks = async (token, artistId) => {
+  const { data } = await axios.get(
+    // `https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg/top-tracks`,
+
+    `https://api.spotify.com/v1/artists/${artistId}/top-tracks`,
+    {
+      headers: {
+        // Authorization: `Bearer BQAGmkSKL599DEwRyXH4_0IDIhwWtTuSsoG7PqxclXbZcpuO0OArslX3lq0h_YNS6qUKujyjDTCZaBGMvuLNnRqbYdT1tUMGl5lsJ5kpWXOzyRgnMkE77kn0Q51hevh0DRGgvxNja30VWolDzpQgXop9YeNbuGqwg7F-EH84hIab2LH2GTSdHjERNvc7woPsB3Wf9aDtbUBhkX-HySAT3qWrgA`,
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        market: 'US',
+      },
+    },
+  );
+  return data;
+};
+
 export const getTrackFeatures = async (token, trackIds) => {
   const n = (!!trackIds && trackIds.join(',')) || undefined;
   // console.log(n);
@@ -77,6 +121,18 @@ export const getTrackFeatures = async (token, trackIds) => {
       },
       params: {
         ids: n,
+      },
+    },
+  );
+  return data;
+};
+
+export const getTrack = async (token, trackId) => {
+  const { data } = await axios.get(
+    `https://api.spotify.com/v1/tracks/${trackId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     },
   );

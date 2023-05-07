@@ -36,6 +36,7 @@ import './styles.css';
 import { withRouter } from 'react-router-dom';
 import SpotifyHeader from '../../components/SpotifyHeader';
 import TrackAnalysisPassport from '../../components/TrackAnalysisPassport';
+import { Helmet } from 'react-helmet';
 const contentStyle = {
   height: '100vh',
   color: '#fff',
@@ -47,13 +48,6 @@ const contentStyle = {
 };
 
 function StatsPage() {
-  const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
-  const REDIRECT_URI = 'http://localhost:3000/';
-  const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
-  const RESPONSE_TYPE = 'token';
-  const SCOPE = 'user-top-read';
-  // ,user-read-private,user-read-email';
-
   const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([]);
   const [trackArtists, setTrackArtists] = useState([]);
@@ -263,29 +257,18 @@ function StatsPage() {
     );
   };
 
-  const menu = [
-    { key: 0, label: 'Spotfiy Wrapped Mini' },
-    { key: 1, label: 'Playlist Wizard' },
-  ];
-  const goToStatsPage = () => {
-    history.replace('stats');
-  };
-  const goToHomePage = () => {
-    history.replace('');
-  };
-  const goToPlaylistPage = () => {
-    history.replace('playlist');
-  };
-
   return (
     <div>
       <header className="App-header">
+        <Helmet>
+          <title>Spotify Top 99 - Stats</title>
+        </Helmet>
         <Layout>
           <SpotifyHeader
             token={token}
-            goToHomePage={goToHomePage}
-            goToStatsPage={goToStatsPage}
-            goToPlaylistPage={goToPlaylistPage}
+            // goToHomePage={goToHomePage}
+            // goToStatsPage={goToStatsPage}
+            // goToPlaylistPage={goToPlaylistPage}
             logout={logout}
           />{' '}
           <Content
@@ -296,7 +279,10 @@ function StatsPage() {
             }}
           >
             <Card style={{ textAlign: 'center' }}>
-              <Typography.Title>Spotify 99 Stats</Typography.Title>
+              <Typography.Title>Spotify Top 99 Stats</Typography.Title>
+              <Typography.Paragraph>
+                Check your listening stats about your top 99 artists and tracks!
+              </Typography.Paragraph>
               <br />
 
               <Radio.Group
@@ -327,7 +313,6 @@ function StatsPage() {
                   key: '1',
                   children: (
                     <div>
-                      {/* <h3 style={contentStyle}> */}
                       <TopItemsList
                         handleGo={handleGo}
                         itemType="Tracks"
@@ -378,6 +363,9 @@ function StatsPage() {
                   key: '4',
                   children: (
                     <div>
+
+                      <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
+
                       <PopularityPassport
                         tracks={tracks}
                         artists={artists}
@@ -387,15 +375,15 @@ function StatsPage() {
                     </div>
                   ),
                 },
-                {
-                  label: 'Analysis',
-                  key: '5',
-                  children: (
-                    <div>
-                      <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
-                    </div>
-                  ),
-                },
+                // {
+                //   label: 'Analysis',
+                //   key: '5',
+                //   children: (
+                //     <div>
+                //       <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
+                //     </div>
+                //   ),
+                // },
               ]}
             />
           </Content>

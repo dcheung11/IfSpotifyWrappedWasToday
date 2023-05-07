@@ -39,12 +39,13 @@ import SpotifyHeader from '../../components/SpotifyHeader';
 import { withRouter } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const contentStyle = {
   height: '100vh',
   color: '#fff',
   // lineHeight: '480px',
-  // textAlign: 'center',
+  textAlign: 'center',
   // background: '#1DB954',
   background: '#FFFFFF',
   // background: '#2c343c',
@@ -128,37 +129,12 @@ function StartPage({ history }) {
     setArtists(top.items);
   };
 
-  const [switchPage, setSwitchPage] = useState(false);
-  const [targetPage, setTargetPage] = useState('');
-
-  //   useEffect(() => {
-  //     if (switchPage) {
-  //       history.push(targetPage);
-  //     }
-  //   }, [switchPage]);
-
-  //   const goToStatsPage = () => {
-  //     setTargetPage('/stats');
-  //     setSwitchPage(true);
-  //   };
-
-  //   const goToPlaylistPage = () => {
-  //     setTargetPage('/playlist');
-  //     setSwitchPage(true);
-  //   };
-
-  const goToStatsPage = () => {
-    history.replace('stats');
-  };
-  const goToHomePage = () => {
-    history.replace('');
-  };
-  const goToPlaylistPage = () => {
-    history.replace('playlist');
-  };
   return (
     <div>
       <header className="App-header">
+        <Helmet>
+          <title>MySpotify99 - Home</title>
+        </Helmet>
         <Layout>
           <SpotifyHeader
             token={token}
@@ -174,7 +150,21 @@ function StartPage({ history }) {
               ...contentStyle,
             }}
           >
-            <Button onClick={logout}>logout</Button>
+            <Typography.Title>
+              {userProfile.display_name
+                ? userProfile.display_name + "'s Home Page"
+                : 'Home Page'}
+            </Typography.Title>
+            <Typography.Paragraph>
+              Check your listening stats, generate custom-made playlists, or
+              explore Spotify's database in detail!
+            </Typography.Paragraph>
+            <br />
+            {/* <Row
+            // style={{
+            //   width: 480,
+            // }}
+            > */}
             {!token ? (
               <LoginModal />
             ) : (
@@ -184,7 +174,7 @@ function StartPage({ history }) {
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  height: '100%',
+                  height: '80%',
                 }}
               >
                 <Card
@@ -209,9 +199,7 @@ function StartPage({ history }) {
                   }
                 >
                   <Card.Meta
-                    title={
-                      '@' + userProfile.id + ' - ' + userProfile.display_name
-                    }
+                    title={'@' + userProfile.id}
                     description={
                       (!!userProfile.external_urls && (
                         <a
@@ -225,37 +213,90 @@ function StartPage({ history }) {
                     }
                   />
                 </Card>
-                <Row
-                  style={{
-                    width: 480,
-                  }}
-                >
-                  <Button
-                    style={{
-                      width: 240,
-                      background: '#1DB954',
-                    }}
-                    key="/stats"
-                    // onClick={goToStatsPage}
-
-                    onClick={() => history.replace(`/${statsPath}`)}
-                  >
-                    Stats
-                  </Button>
-                  <Button
-                    style={{
-                      width: 240,
-                      background: '#1DB954',
-                    }}
-                    // onClick={goToPlaylistPage}
-                    onClick={() => history.replace(`/${playlistPath}`)}
-                    key="/playlist"
-                  >
-                    Playlist Wizard
-                  </Button>
-                </Row>
               </div>
             )}
+            <br />
+            <br />
+            <div
+              style={{
+                display: 'flex',
+                // flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                // height: '80%',
+                // alignItems: 'center',
+              }}
+            >
+              <Col span={4}>
+                <Button
+                  shape="round"
+                  style={{
+                    width: 120,
+                    height: 40,
+
+                    background: '#1DB954',
+                  }}
+                  key="/stats"
+                  // onClick={goToStatsPage}
+
+                  onClick={() => history.replace(`/${statsPath}`)}
+                >
+                  Stats
+                </Button>
+              </Col>
+              <Col span={4}>
+                <Button
+                  shape="round"
+                  style={{
+                    width: 120,
+                    height: 40,
+
+                    background: '#1DB954',
+                  }}
+                  // onClick={goToPlaylistPage}
+                  onClick={() => history.replace(`/${playlistPath}`)}
+                  key="/playlist"
+                >
+                  Playlist
+                </Button>
+              </Col>
+
+              <Col span={4}>
+                <Button
+                  shape="round"
+                  style={{
+                    width: 120,
+                    height: 40,
+
+                    background: '#1DB954',
+                  }}
+                  key="/stats"
+                  // onClick={goToStatsPage}
+
+                  onClick={() => history.replace(`/explore`)}
+                >
+                  Explore
+                </Button>
+              </Col>
+              <Col span={4}>
+                <Button
+                  shape="round"
+                  style={{
+                    width: 120,
+                    height: 40,
+
+                    background: '#1DB954',
+                  }}
+                  key="/stats"
+                  // onClick={goToStatsPage}
+
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              </Col>
+            </div>
+            <br /> <br /> <br />
           </Content>
         </Layout>
       </header>

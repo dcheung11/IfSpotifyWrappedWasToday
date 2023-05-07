@@ -44,7 +44,21 @@ export default function PopularityPassport(props) {
             getImage={props.getTrackImage}
             key={1}
             data={mostPopularTracks}
-            header="Most Popular Tracks"
+            header="Your MAINSTREAM Tracks"
+          />
+        </Col>
+        <Col
+          span={6}
+          xs={{ order: 1 }}
+          sm={{ order: 2 }}
+          md={{ order: 3 }}
+          lg={{ order: 4 }}
+        >
+          <PopularityList
+            getImage={props.getArtistImage}
+            key={3}
+            data={mostPopularArtists}
+            header="Your MAINSTREAM Artists"
           />
         </Col>
         <Col
@@ -58,23 +72,10 @@ export default function PopularityPassport(props) {
             getImage={props.getTrackImage}
             key={2}
             data={leastPopularTracks}
-            header="Least Popular Tracks"
+            header="Your SECRET Tracks"
           />{' '}
         </Col>
-        <Col
-          span={6}
-          xs={{ order: 1 }}
-          sm={{ order: 2 }}
-          md={{ order: 3 }}
-          lg={{ order: 4 }}
-        >
-          <PopularityList
-            getImage={props.getArtistImage}
-            key={3}
-            data={mostPopularArtists}
-            header="Most Popular Artists"
-          />{' '}
-        </Col>
+
         <Col
           span={6}
           xs={{ order: 1 }}
@@ -86,8 +87,8 @@ export default function PopularityPassport(props) {
             getImage={props.getArtistImage}
             key={4}
             data={leastPopularArtists}
-            header="Least Popular Artists"
-          />{' '}
+            header="Your SECRET Artists"
+          />
         </Col>
       </Row>
       {/* <PopularityScatter tracks={props.tracks} artists={props.artists} /> */}

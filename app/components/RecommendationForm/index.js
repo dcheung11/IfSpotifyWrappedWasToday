@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  AutoComplete,
   Button,
   Card,
   Col,
@@ -22,6 +23,11 @@ import {
 import SpotifyLogoBlack from '../../images/spotify-logo.png';
 import { Header } from 'antd/es/layout/layout';
 import { withRouter } from 'react-router-dom';
+import {
+  searchArtistsRequest,
+  searchTrackRequest,
+} from '../../utils/api/spotifyApi';
+import { xor } from 'lodash';
 function RecommendationForm(props) {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
   const REDIRECT_URI = 'http://localhost:3000/';
@@ -124,6 +130,82 @@ function RecommendationForm(props) {
   const handlePlaylistSize = value => {
     console.log('changed', value);
   };
+  const [selectedOption, setSelectedOption] = useState('');
+
+  const [searchTermArtist, setSearchTermArtist] = useState('');
+  const [searchTermTrack, setSearchTermTrack] = useState('');
+
+  const [artistOptions, setArtistOptions] = useState([]);
+  const [trackOptions, setTrackOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    let token = window.localStorage.getItem('token');
+    if (!token && hash) {
+      token = hash
+        .substring(1)
+        .split('&')
+        .find(elem => elem.startsWith('access_token'))
+        .split('=')[1];
+
+      window.location.hash = '';
+      window.localStorage.setItem('token', token);
+    }
+    setToken(token);
+  }, []);
+
+  useEffect(() => {
+    if (token != '' && searchTermArtist != '' && !!searchTermArtist) {
+      searchArtists();
+    }
+  }, [searchTermArtist]);
+  useEffect(() => {
+    if (token != '' && searchTermTrack != '' && !!searchTermTrack) {
+      searchTracks();
+    }
+  }, [searchTermTrack]);
+
+  const searchArtists = async e => {
+    if (e) {
+      e.preventDefault();
+    }
+    setLoading(true);
+    const a = await searchArtistsRequest(token, searchTermArtist);
+    console.log(a);
+    setArtistOptions(
+      a.map(a => {
+        return {
+          label: a.name,
+          value: a.id,
+        };
+      }),
+    );
+    setLoading(false);
+  };
+  const searchTracks = async e => {
+    if (e) {
+      e.preventDefault();
+    }
+    setLoading(true);
+
+    const a = await searchTrackRequest(token, searchTermTrack);
+    console.log(a);
+    setTrackOptions(
+      a.map(a => {
+        return {
+          label: a.name,
+          value: a.id,
+        };
+      }),
+    );
+
+    setLoading(false);
+  };
+  useEffect(() => {
+    console.log(artistOptions.length);
+  }, [artistOptions]);
+  const [token, setToken] = useState('');
 
   return (
     <Form
@@ -142,9 +224,8 @@ function RecommendationForm(props) {
       //   validateMessages={'Must >5'}
     >
       <Card style={{ textAlign: 'center' }}>
-        <Typography.Title>Playlist Wizard</Typography.Title>
         <Typography.Text style={{ fontSize: '20px' }}>
-          1. Choose a combination of 5 artists, tracks, and genres
+          1. Choose a combination of up to 5 artists, tracks, and genres
         </Typography.Text>
         <br />
         <br />
@@ -165,15 +246,21 @@ function RecommendationForm(props) {
                 style={{
                   width: '100%',
                 }}
+                loading={loading}
                 placeholder="Please select"
-                //   defaultValue={}
-                options={props.artists.map(a => {
-                  return {
-                    label: a.name,
-                    value: a.id,
-                  };
+                // options={artistOptions}
+                onSearch={setSearchTermArtist}
+              >
+                {!loading &&
+                  artistOptions.map(x => {
+                    return (
+                      <Select.Option value={x.value}> {x.label}</Select.Option>
+                    );
+                  })}
+                {props.artists.map(x => {
+                  return <Select.Option value={x.id}> {x.name}</Select.Option>;
                 })}
-              />
+              </Select>
             </Form.Item>
           </Col>
           <Col span={2} />
@@ -193,6 +280,7 @@ function RecommendationForm(props) {
                   width: '100%',
                 }}
                 placeholder="Please select"
+                // onChange={onChange}
                 options={props.genres.map(a => {
                   return {
                     label: a,
@@ -208,44 +296,27 @@ function RecommendationForm(props) {
               Tracks
             </Typography.Text>
 
-            <Form.Item
-              name="seed_tracks"
-              //   rules={[
-              //     {
-              //       validator: (rule, value, callback, ...rest) => {
-              //         if (
-              //           artistsSelected +
-              //             genresSelected +
-              //             tracksSelected >
-              //           5
-              //         ) {
-              //           value.pop();
-              //           message('No more then two members are allowed.');
-              //         }
-              //       },
-              //       message:
-              //         'Up to 5 seed values may be provided in any combination of seed_artists, seed_tracks and seed_genres.',
-              //     },
-              //   ]}
-            >
+            <Form.Item name="seed_tracks">
               <Select
                 mode="multiple"
                 closable
-                // disabled={
-                //   artistsSelected + genresSelected + tracksSelected >= 5
-                // }
                 style={{
                   width: '100%',
                 }}
                 placeholder="Please select"
-                //   defaultValue={}
-                options={props.tracks.map(a => {
-                  return {
-                    label: a.name,
-                    value: a.id,
-                  };
+                onSearch={setSearchTermTrack}
+                // options={trackOptions}
+              >
+                {!loading &&
+                  trackOptions.map(x => {
+                    return (
+                      <Select.Option value={x.value}> {x.label}</Select.Option>
+                    );
+                  })}
+                {props.tracks.map(x => {
+                  return <Select.Option value={x.id}> {x.name}</Select.Option>;
                 })}
-              />
+              </Select>
             </Form.Item>
           </Col>
         </Row>

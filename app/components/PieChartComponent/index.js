@@ -11,7 +11,7 @@ export function PieChartComponent(props) {
   const option = {
     backgroundColor: '#FFFFFF',
     title: {
-      text: 'Your Most Frequently Appearing Genres',
+      text: 'Top Genres From Your Top 99 Tracks and Artists',
       left: 'center',
       top: 20,
       textStyle: {
@@ -24,7 +24,7 @@ export function PieChartComponent(props) {
     visualMap: {
       show: false,
       min: -20,
-      max: 100,
+      max: 140,
       inRange: {
         colorLightness: [0, 1],
       },

@@ -39,7 +39,7 @@ function SpotifyHeader(props) {
       <Row>
         {/* <Space size={'large'}> */}
         <Typography.Title style={{ color: '#1DB954' }}>
-          My Spotify.99 
+          Spotify Top 99
         </Typography.Title>
         <Button
           className="custom-button-hover"
@@ -84,13 +84,18 @@ function SpotifyHeader(props) {
           Playlist
         </Button>
         <Button
-          type="primary"
+          className="custom-button-hover"
           style={{
-            borderColor: 'red',
-            ':hover': { borderColor: 'green', color: 'red' },
+            marginTop: '22px',
+            color: '#1DB954',
+            // borderColor: '#1DB954',
+            // backgroundColor: '#191414',
           }}
+          size="large"
+          shape="round"
+          onClick={() => props.history.replace(`/explore`)}
         >
-          Click me
+          Explore
         </Button>
         {/* {props.token ? (
             <Button

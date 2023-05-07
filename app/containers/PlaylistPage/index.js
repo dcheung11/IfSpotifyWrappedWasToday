@@ -45,13 +45,14 @@ import SpotifyHeader from '../../components/SpotifyHeader';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
 import RecommendationForm from '../../components/RecommendationForm';
+import { Helmet } from 'react-helmet';
 
 const contentStyle = {
   height: '100vh',
   //   width: '100vh',
   color: '#fff',
   // lineHeight: '480px',
-  // textAlign: 'center',
+  textAlign: 'center',
   // background: '#1DB954',
   background: '#FFFFFF',
   // background: '#2c343c',
@@ -193,7 +194,9 @@ function PlaylistPage(props) {
     const playlist = await addItemsToPlaylist(
       token,
       newPlaylist.id,
-      recommendations.tracks.map(track => track.uri),
+      (recommendations.tracks ? recommendations.tracks : []).map(
+        track => track.uri,
+      ),
     );
   };
 
@@ -218,6 +221,10 @@ function PlaylistPage(props) {
   return (
     <div>
       <header className="App-header">
+        {/* <div className="App"> */}
+        <Helmet>
+          <title>MySpotify99 - Playlist</title>
+        </Helmet>
         <Layout>
           <SpotifyHeader
             token={token}
@@ -233,6 +240,12 @@ function PlaylistPage(props) {
               ...contentStyle,
             }}
           >
+            <Typography.Title>Playlist Genius</Typography.Title>
+            <Typography.Paragraph>
+              Choose your favourite tracks, artists, and genres and adjust the
+              sliders to get a custom-made playlist!
+            </Typography.Paragraph>
+
             <RecommendationForm
               artists={artists}
               tracks={tracks}
@@ -241,7 +254,6 @@ function PlaylistPage(props) {
               //   playlistLimit={playlistLimit}
               setPlaylistLimit={setPlaylistLimit}
             />
-
             <Card style={{ textAlign: 'center' }}>
               <Typography.Text style={{ fontSize: '20px' }}>
                 3. Create your playlist
