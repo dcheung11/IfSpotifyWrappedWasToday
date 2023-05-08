@@ -85,7 +85,7 @@
     "lodash": "4.17.11",
     "minimist": "1.2.0",
     "prop-types": "15.7.2",
-    "react": "16.8.6",
+    "react": "16.9.0",
     "react-dom": "16.8.6",
     "react-helmet": "^6.0.0-beta",
     "react-infinite-scroll-component": "^6.1.0",
