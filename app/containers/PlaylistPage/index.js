@@ -11,6 +11,7 @@ import {
   Layout,
   List,
   Menu,
+  message,
   Modal,
   Radio,
   Row,
@@ -60,7 +61,9 @@ const contentStyle = {
 
 function PlaylistPage(props) {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
-  const REDIRECT_URI = 'http://localhost:3000/';
+  const REDIRECT_URI = 'https://spotify-top-99.web.app/';
+
+  // const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
   const SCOPE = 'user-top-read';
@@ -186,6 +189,7 @@ function PlaylistPage(props) {
     console.log(userProfile);
     const playlist = await createPlaylist(token, playlistName, userProfile.id);
     console.log('new', newPlaylist);
+    success();
     setNewPlaylist(playlist);
   };
 
@@ -216,6 +220,11 @@ function PlaylistPage(props) {
     console.log(event);
 
     setPlaylistName(event);
+  };
+
+  // const [messageApi, contextHolder] = message.useMessage();
+  const success = () => {
+    message.success('Playlist successfully created');
   };
 
   return (
@@ -254,7 +263,7 @@ function PlaylistPage(props) {
               //   playlistLimit={playlistLimit}
               setPlaylistLimit={setPlaylistLimit}
             />
-            <Card style={{ textAlign: 'center' }}>
+            <Card style={{ textAlign: 'center' }} bordered>
               <Typography.Text style={{ fontSize: '20px' }}>
                 3. Create your playlist
               </Typography.Text>
@@ -270,7 +279,7 @@ function PlaylistPage(props) {
                 <>
                   <List
                     // pagination={paginationProps}
-                    bordered
+                    bordered={false}
                     size="small"
                     dataSource={recommendations.tracks}
                     grid={{ column: 3 }}
@@ -294,7 +303,12 @@ function PlaylistPage(props) {
                       </List.Item>
                     )}
                   />
-                  <Button onClick={handleCreatePlaylist}>Create</Button>
+                  <Button
+                    style={{ backgroundColor: '#191414', color: '#1DB954' }}
+                    onClick={handleCreatePlaylist}
+                  >
+                    Create Playlist
+                  </Button>
                 </>
               )}
             </Card>

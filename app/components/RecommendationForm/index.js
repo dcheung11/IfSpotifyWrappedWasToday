@@ -29,12 +29,6 @@ import {
 } from '../../utils/api/spotifyApi';
 import { xor } from 'lodash';
 function RecommendationForm(props) {
-  const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
-  const REDIRECT_URI = 'http://localhost:3000/';
-  const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
-  const RESPONSE_TYPE = 'token';
-  const SCOPE = 'user-top-read';
-
   const tuners = {
     acousticness: ['Acousticness🎸', 1],
     danceability: ['Danceability💃', 1],
@@ -140,9 +134,6 @@ function RecommendationForm(props) {
     );
   }
 
-  const handlePlaylistSize = value => {
-    console.log('changed', value);
-  };
   const [selectedOption, setSelectedOption] = useState('');
 
   const [searchTermArtist, setSearchTermArtist] = useState('');
@@ -215,9 +206,7 @@ function RecommendationForm(props) {
 
     setLoading(false);
   };
-  useEffect(() => {
-    console.log(artistOptions.length);
-  }, [artistOptions]);
+
   const [token, setToken] = useState('');
 
   return (

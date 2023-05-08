@@ -17,7 +17,9 @@ import SpotifyLogoBlack from '../../images/spotify-logo.png';
 
 export default function LoginModal(props) {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
-  const REDIRECT_URI = 'http://localhost:3000/';
+  const REDIRECT_URI = 'https://spotify-top-99.web.app/';
+
+  // const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
   const SCOPE = ['user-top-read', 'playlist-modify-public'];

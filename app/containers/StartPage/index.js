@@ -24,7 +24,9 @@ const contentStyle = {
 };
 function StartPage({ history }) {
   const CLIENT_ID = '921b749a90e640a1bdd1ce31c4abda39';
-  const REDIRECT_URI = 'http://localhost:3000/';
+  const REDIRECT_URI = 'https://spotify-top-99.web.app/';
+
+  // const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
   const SCOPE = 'user-top-read';
@@ -76,27 +78,17 @@ function StartPage({ history }) {
     setUserProfile(user);
   };
 
-  useEffect(() => {
-    window.localStorage.removeItem('token');
-  }, [userProfile]);
+  // useEffect(() => {
+  //   console.log(userProfile);
+  //   if (!userProfile.display_name && userProfile != []) {
+  //     logout();
+  //   }
+  // }, [userProfile]);
   const logout = () => {
     setToken('');
     window.localStorage.removeItem('token');
   };
   // window.localStorage.removeItem('token');
-  const topTracks = async e => {
-    e.preventDefault();
-    const top = await userTopItemsRequest(token, 'tracks', e.target.value);
-    console.log('top', top.items);
-    setTracks(top.items);
-  };
-
-  const topArtists = async e => {
-    e.preventDefault();
-    const top = await userTopItemsRequest(token, 'artists', e.target.value);
-    console.log('top', top.items);
-    setArtists(top.items);
-  };
 
   return (
     <div>
