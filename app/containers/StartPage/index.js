@@ -1,45 +1,17 @@
+import { Button, Card, Col, Empty, Image, Layout, Typography } from 'antd';
+// import { useEffect, useState }
+
+import { Content } from 'antd/es/layout/layout';
+import { withRouter } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import React, { useEffect, useState } from 'react';
 import {
-  Avatar,
-  Button,
-  Card,
-  Carousel,
-  Col,
-  Descriptions,
-  Empty,
-  Image,
-  Layout,
-  List,
-  Menu,
-  Modal,
-  Radio,
-  Row,
-  Space,
-  Statistic,
-  Tabs,
-  Typography,
-} from 'antd';
-import React from 'react';
-import { useEffect, useState } from 'react';
-import {
-  getUser,
   getUserProfile,
-  searchArtistsRequest,
   userTopItemsRequest,
 } from '../../utils/api/spotifyApi';
-import { Content, Footer, Header } from 'antd/es/layout/layout';
-import { LikeOutlined, LoginOutlined, UserOutlined } from '@ant-design/icons';
-import { render } from 'react-testing-library';
-import TopItemsList from '../../components/TopItemsList';
-import { PieChartComponent } from '../../components/PieChartComponent';
-import { capitalizeFirstLetters, toCamelCase } from '../../utils/transformers';
-import SpotifyLogoBlack from '../../images/spotify-logo.png';
-import SpotifyLogoGreen from '../../images/spotify-logo-green.png';
+
 import LoginModal from '../../components/LoginModal';
 import SpotifyHeader from '../../components/SpotifyHeader';
-import { withRouter } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 const contentStyle = {
   height: '100vh',
@@ -70,7 +42,7 @@ function StartPage({ history }) {
   //   const navigate = useNavigate();
 
   useEffect(() => {
-    const hash = window.location.hash;
+    const { hash } = window.location;
     let token = window.localStorage.getItem('token');
 
     if (!token && hash) {
@@ -104,11 +76,14 @@ function StartPage({ history }) {
     setUserProfile(user);
   };
 
+  useEffect(() => {
+    window.localStorage.removeItem('token');
+  }, [userProfile]);
   const logout = () => {
     setToken('');
     window.localStorage.removeItem('token');
   };
-
+  // window.localStorage.removeItem('token');
   const topTracks = async e => {
     e.preventDefault();
     const top = await userTopItemsRequest(token, 'tracks', e.target.value);
@@ -146,7 +121,7 @@ function StartPage({ history }) {
           >
             <Typography.Title>
               {userProfile.display_name
-                ? userProfile.display_name + "'s Home Page"
+                ? `${userProfile.display_name}'s Home Page`
                 : 'Home Page'}
             </Typography.Title>
             <Typography.Paragraph>
@@ -195,7 +170,7 @@ function StartPage({ history }) {
                       }
                     >
                       <Card.Meta
-                        title={'@' + userProfile.id}
+                        title={`@${userProfile.id}`}
                         description={
                           (!!userProfile.external_urls && (
                             <a
@@ -221,75 +196,74 @@ function StartPage({ history }) {
                         // alignItems: 'center',
                       }}
                     >
-                        <Col span={6}>
-                          <Button
-                            shape="round"
-                            style={{
-                              width: 120,
-                              height: 40,
+                      <Col span={6}>
+                        <Button
+                          shape="round"
+                          style={{
+                            width: 120,
+                            height: 40,
 
-                              background: '#1DB954',
-                            }}
-                            key="/stats"
-                            // onClick={goToStatsPage}
+                            background: '#1DB954',
+                          }}
+                          key="/stats"
+                          // onClick={goToStatsPage}
 
-                            onClick={() => history.replace(`/${statsPath}`)}
-                          >
-                            Stats
-                          </Button>
-                        </Col>
-                        <Col span={6}>
-                          <Button
-                            shape="round"
-                            style={{
-                              width: 120,
-                              height: 40,
+                          onClick={() => history.replace(`/${statsPath}`)}
+                        >
+                          Stats
+                        </Button>
+                      </Col>
+                      <Col span={6}>
+                        <Button
+                          shape="round"
+                          style={{
+                            width: 120,
+                            height: 40,
 
-                              background: '#1DB954',
-                            }}
-                            // onClick={goToPlaylistPage}
-                            onClick={() => history.replace(`/${playlistPath}`)}
-                            key="/playlist"
-                          >
-                            Playlist
-                          </Button>
-                        </Col>
+                            background: '#1DB954',
+                          }}
+                          // onClick={goToPlaylistPage}
+                          onClick={() => history.replace(`/${playlistPath}`)}
+                          key="/playlist"
+                        >
+                          Playlist
+                        </Button>
+                      </Col>
 
-                        <Col span={6}>
-                          <Button
-                            shape="round"
-                            style={{
-                              width: 120,
-                              height: 40,
+                      <Col span={6}>
+                        <Button
+                          shape="round"
+                          style={{
+                            width: 120,
+                            height: 40,
 
-                              background: '#1DB954',
-                            }}
-                            key="/stats"
-                            // onClick={goToStatsPage}
+                            background: '#1DB954',
+                          }}
+                          key="/stats"
+                          // onClick={goToStatsPage}
 
-                            onClick={() => history.replace(`/explore`)}
-                          >
-                            Explore
-                          </Button>
-                        </Col>
-                        <Col span={6}>
-                          <Button
-                            shape="round"
-                            style={{
-                              width: 120,
-                              height: 40,
+                          onClick={() => history.replace(`/explore`)}
+                        >
+                          Explore
+                        </Button>
+                      </Col>
+                      <Col span={6}>
+                        <Button
+                          shape="round"
+                          style={{
+                            width: 120,
+                            height: 40,
 
-                              background: '#1DB954',
-                            }}
-                            key="/stats"
-                            // onClick={goToStatsPage}
+                            background: '#1DB954',
+                          }}
+                          key="/stats"
+                          // onClick={goToStatsPage}
 
-                            onClick={logout}
-                          >
-                            Logout
-                          </Button>
-                        </Col>
-
+                          onClick={logout}
+                        >
+                          Logout
+                        </Button>
+                      </Col>
                     </div>
                     <br /> <br /> <br />
                     xs
@@ -305,12 +279,26 @@ function StartPage({ history }) {
 
                         background: '#1DB954',
                       }}
-                      key="/stats"
+                      key="logi"
                       // onClick={goToStatsPage}
                       href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}
                     >
                       Login
                     </Button>
+                    {/* <Button
+                      shape="round"
+                      style={{
+                        width: 120,
+                        height: 40,
+
+                        background: '#1DB954',
+                      }}
+                      key="logi"
+                      onClick={logout}
+                      // href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}
+                    >
+                      Logout
+                    </Button> */}
                   </>
                 )}
               </div>
