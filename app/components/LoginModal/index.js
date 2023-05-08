@@ -62,7 +62,7 @@ export default function LoginModal(props) {
         <Button
           icon={
             <>
-              Login to{' '}
+              Login to Spotify
               <Image
                 src={SpotifyLogoBlack}
                 preview={false}

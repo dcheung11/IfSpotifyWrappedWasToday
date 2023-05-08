@@ -94,7 +94,7 @@ function ExplorePage(props) {
   return (
     <div>
       <header className="App-header">
-      <Helmet>
+        <Helmet>
           <title>MySpotify99 - Explore</title>
         </Helmet>
         <Layout>
@@ -112,7 +112,12 @@ function ExplorePage(props) {
               ...contentStyle,
             }}
           >
-            <Typography.Title>Explore Artists and Tracks</Typography.Title>
+            <Typography.Title>Discover New</Typography.Title>
+            <Typography.Paragraph>
+              Get detailed breakdowns and music recommendations for the entire
+              Spotify database! Search and find some new tracks and artists!
+            </Typography.Paragraph>
+
             <br />
             <Card>
               <div

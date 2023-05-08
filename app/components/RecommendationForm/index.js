@@ -66,7 +66,15 @@ function RecommendationForm(props) {
   };
   const items = Object.entries(tuners);
   const grid = [];
+  const sliderStyle = {
+    backgroundColor: '#1DB954',
+    height: 8, // thickness of slider track
+  };
 
+  const railStyle = {
+    backgroundColor: 'white',
+    height: 8, // thickness of slider rail
+  };
   for (let i = 0; i < items.length; i += 2) {
     const item1 = items[i];
     const item2 = items[i + 1];
@@ -92,6 +100,9 @@ function RecommendationForm(props) {
 
             <Form.Item name={item1[0]}>
               <Slider
+                // style={sliderStyle}
+                railStyle={railStyle}
+                trackStyle={sliderStyle}
                 range={{
                   draggableTrack: true,
                 }}
@@ -112,6 +123,8 @@ function RecommendationForm(props) {
 
             <Form.Item name={item2[0]}>
               <Slider
+                railStyle={railStyle}
+                trackStyle={sliderStyle}
                 range={{
                   draggableTrack: true,
                 }}
@@ -344,8 +357,12 @@ function RecommendationForm(props) {
         <br />
         <br />
         <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Get Recommendations
+          <Button
+            style={{ backgroundColor: '#191414', color: '#1DB954' }}
+            type="primary"
+            htmlType="submit"
+          >
+            Get Playlist
           </Button>
         </Form.Item>
       </Card>

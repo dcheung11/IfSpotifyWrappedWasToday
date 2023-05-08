@@ -286,7 +286,7 @@ function StatsPage() {
               <br />
 
               <Radio.Group
-                // style={{ color: 'red' }}
+                // style={{ backgroundColor: 'black' }}
                 className="custom-radio-style"
                 buttonStyle="solid"
                 size="large"
@@ -294,97 +294,135 @@ function StatsPage() {
                 defaultValue="long_term"
               >
                 {/* <Space direction="vertical"> */}
-                <Radio.Button value="short_term">Short Term</Radio.Button>
-                <Radio.Button value="medium_term">Medium Term</Radio.Button>
-                <Radio.Button value="long_term">Long Term</Radio.Button>
-                {/* </Space> */}
+                <Radio.Button
+                  style={{
+                    backgroundColor:
+                      timePeriod == 'short_term' ? '#1DB954' : 'white',
+                    color: timePeriod == 'short_term' ? 'black' : '#1DB954',
+                    borderColor:
+                      timePeriod == 'short_term' ? 'white' : '#1DB954',
+                  }}
+                  // style={{ backgroundColor: 'black' }}
+                  value="short_term"
+                >
+                  Short Term
+                </Radio.Button>
+                <Radio.Button
+                  style={{
+                    backgroundColor:
+                      timePeriod == 'medium_term' ? '#1DB954' : 'white',
+                    color: timePeriod == 'medium_term' ? 'black' : '#1DB954',
+                    borderColor:
+                      timePeriod == 'medium_term' ? 'white' : '#1DB954',
+                  }}
+                  value="medium_term"
+                >
+                  Medium Term
+                </Radio.Button>
+                <Radio.Button
+                  style={{
+                    backgroundColor:
+                      timePeriod == 'long_term' ? '#1DB954' : 'white',
+                    color: timePeriod == 'long_term' ? 'black' : '#1DB954',
+                    borderColor:
+                      timePeriod == 'long_term' ? 'white' : '#1DB954',
+                  }}
+                  value="long_term"
+                >
+                  Long Term
+                </Radio.Button>
               </Radio.Group>
             </Card>
             <br />
             <Tabs
-              tabBarStyle={{}}
-              centered
-              defaultActiveKey="1"
-              type="card"
-              size="large"
-              items={[
-                {
-                  label: `Top Tracks`,
-                  key: '1',
-                  children: (
-                    <div>
-                      <TopItemsList
-                        handleGo={handleGo}
-                        itemType="Tracks"
-                        // renderItem={renderTracks()}
-                        data={tracks}
-                        getDescription={getTrackDescription}
-                        getImage={getTrackImage}
-                      />
-                      {/* </h3> */}
-                    </div>
-                  ),
-                },
-                {
-                  label: 'Top Artists',
-                  key: '2',
-                  children: (
-                    <div>
-                      {/* <h3 style={contentStyle}> */}
-                      <TopItemsList
-                        handleGo={handleGo}
-                        itemType="Artists"
-                        // renderItem={renderTracks()}
-                        data={artists}
-                        getDescription={getArtistDescription}
-                        getImage={getArtistImage}
-                      />
-                      {/* </h3> */}
-                    </div>
-                  ),
-                },
-                {
-                  label: 'Top Genres',
-                  key: '3',
-                  children: (
-                    <div>
-                      <PieChartComponent
-                        data={genres
-                          .sort(function(a, b) {
-                            return a.value - b.value;
-                          })
-                          .slice(genres.length - 10, genres.length)}
-                      />
-                    </div>
-                  ),
-                },
-                {
-                  label: 'Popularity',
-                  key: '4',
-                  children: (
-                    <div>
+            // tabBarStyle={{
+            //   color: '#1DB954',
+            //   // backgroundColor:
+            //   //   timePeriod == 'long_term' ? '#1DB954' : 'white',
+            //   // color: timePeriod == 'long_term' ? 'black' : '#1DB954',
+            //   // borderColor: timePeriod == 'long_term' ? 'white' : '#1DB954',
+            // }}
+            centered
+            defaultActiveKey="1"
+            type="card"
+            size="large"
+            items={[
+              {
+                label: `Top Tracks`,
+                key: '1',
+                children: (
+                  <div>
+                    <TopItemsList
+                      handleGo={handleGo}
+                      itemType="Tracks"
+                      // renderItem={renderTracks()}
+                      data={tracks}
+                      getDescription={getTrackDescription}
+                      getImage={getTrackImage}
+                    />
+                    {/* </h3> */}
+                  </div>
+                ),
+              },
+              {
+                label: 'Top Artists',
+                key: '2',
+                children: (
+                  <div>
+                    {/* <h3 style={contentStyle}> */}
+                    <TopItemsList
+                      handleGo={handleGo}
+                      itemType="Artists"
+                      // renderItem={renderTracks()}
+                      data={artists}
+                      getDescription={getArtistDescription}
+                      getImage={getArtistImage}
+                    />
+                    {/* </h3> */}
+                  </div>
+                ),
+              },
+              {
+                label: 'Top Genres',
+                key: '3',
+                children: (
+                  <div>
+                    <PieChartComponent
+                      data={genres
+                        .sort(function(a, b) {
+                          return a.value - b.value;
+                        })
+                        .slice(genres.length - 10, genres.length)}
+                    />
+                  </div>
+                ),
+              },
+              {
+                label: 'Popularity',
+                key: '4',
+                children: (
+                  <div>
+                    <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
 
-                      <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
-
-                      <PopularityPassport
-                        tracks={tracks}
-                        artists={artists}
-                        getArtistImage={getArtistImage}
-                        getTrackImage={getTrackImage}
-                      />
-                    </div>
-                  ),
-                },
-                // {
-                //   label: 'Analysis',
-                //   key: '5',
-                //   children: (
-                //     <div>
-                //       <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
-                //     </div>
-                //   ),
-                // },
-              ]}
+                    <PopularityPassport
+                      tracks={tracks}
+                      artists={artists}
+                      getArtistImage={getArtistImage}
+                      getTrackImage={getTrackImage}
+                    />
+                  </div>
+                ),
+              },
+              // {
+              //   label: 'Analysis',
+              //   key: '5',
+              //   children: (
+              //     <div>
+              //       <TrackAnalysisPassport trackAnalysis={trackAnalysis} />
+              //     </div>
+              //   ),
+              // },
+            ]}
             />
           </Content>
           {/* <Footer /> */}
