@@ -24,6 +24,7 @@ function SpotifyHeader(props) {
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
   const SCOPE = 'user-top-read';
+  const [token, setToken] = useState('');
 
   return (
     <Header
@@ -41,13 +42,14 @@ function SpotifyHeader(props) {
         <Typography.Title style={{ color: '#1DB954' }}>
           Spotify Top 99
         </Typography.Title>
+        <br />
         <Button
           className="custom-button-hover"
           style={{
             marginTop: '22px',
             color: '#1DB954',
-            // borderColor: '#1DB954',
-            // backgroundColor: '#191414',
+            borderColor: '#191414',
+            backgroundColor: '#191414',
           }}
           size="large"
           shape="round"
@@ -60,8 +62,8 @@ function SpotifyHeader(props) {
           style={{
             marginTop: '22px',
             color: '#1DB954',
-            // borderColor: '#1DB954',
-            // backgroundColor: '#191414',
+            borderColor: '#191414',
+            backgroundColor: '#191414',
           }}
           size="large"
           shape="round"
@@ -74,8 +76,8 @@ function SpotifyHeader(props) {
           style={{
             marginTop: '22px',
             color: '#1DB954',
-            // borderColor: '#1DB954',
-            // backgroundColor: '#191414',
+            borderColor: '#191414',
+            backgroundColor: '#191414',
           }}
           size="large"
           shape="round"
@@ -88,48 +90,29 @@ function SpotifyHeader(props) {
           style={{
             marginTop: '22px',
             color: '#1DB954',
-            // borderColor: '#1DB954',
-            // backgroundColor: '#191414',
+            borderColor: '#191414',
+            backgroundColor: '#191414',
           }}
           size="large"
           shape="round"
-          onClick={() => props.history.replace(`/explore`)}
+          onClick={() => props.history.replace(`/discover`)}
         >
-          Explore
+          Discover
         </Button>
-        {/* {props.token ? (
-            <Button
-              // icon={}
-              className="login-button"
-              style={{
-                marginTop: '22px',
-                backgroundColor: '#1DB954',
-                borderColor: '#1DB954',
-                color: '#191414',
-              }}
-              size="large"
-              shape="round"
-              href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}
-            >
-              Login to Spotify
-            </Button>
-          ) : (
-            <Button
-              className="logout-button"
-              style={{
-                marginTop: '22px',
-                backgroundColor: '#1DB954',
-                borderColor: '#1DB954',
-                color: '#191414',
-              }}
-              size="large"
-              shape="round"
-              onClick={props.logout}
-            >
-              Logout
-            </Button>
-          )} */}
-        {/* </Space> */}
+        {/* <Button
+          className="custom-button-hover"
+          style={{
+            marginTop: '22px',
+            color: '#1DB954',
+            borderColor: '#191414',
+            backgroundColor: '#191414',
+          }}
+          size="large"
+          shape="round"
+          onClick={props.logout}
+        >
+          Logout
+        </Button> */}
       </Row>
     </Header>
   );

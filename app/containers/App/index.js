@@ -28,7 +28,7 @@ export default function App() {
         <Route exact path="/" component={StartPage} />
         <Route exact path="/playlist" component={PlaylistPage} />
         <Route exact path="/stats" component={StatsPage} />
-        <Route exact path="/explore" component={ExplorePage} />
+        <Route exact path="/discover" component={ExplorePage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
