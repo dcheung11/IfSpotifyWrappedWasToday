@@ -135,7 +135,7 @@ function StartPage({ history }) {
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  height: '80%',
+                  // height: '80%',
                 }}
               >
                 {userProfile.images ? (
@@ -262,7 +262,13 @@ function StartPage({ history }) {
                   </>
                 ) : (
                   <>
-                    <Empty description="" />{' '}
+                    <Empty  description="No data to show yet..." />{' '}
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
                     <Button
                       shape="round"
                       style={{
